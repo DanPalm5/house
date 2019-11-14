@@ -2,6 +2,7 @@
 // Final Project
 //Daniel Palmieri T/TR 12:30-1:45
 //Room currently contains basic geometry for a fireplace, fan, table with chairs, door, mirror, christmas tree, and window.
+// to toggle projection modes, use P.
 #ifdef OSX
 	#include <GLUT/glut.h>
 #else
