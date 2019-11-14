@@ -9,7 +9,7 @@ GLfloat radius = 4.0f;
 // first person camera values
 GLfloat camera_step = 0.20;
 GLfloat camera_theta = 0.0f;
-GLfloat camera_dtheta = 5.0f;
+GLfloat camera_dtheta = 6.0f;
 
 // House variables
 GLfloat wall_length = 20;
