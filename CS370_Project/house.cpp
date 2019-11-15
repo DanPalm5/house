@@ -16,53 +16,6 @@
 #include "materials.h"
 #include "globals.h"
 
-// Projection states
-#define ORTHOGRAPHIC 0
-#define FIRSTPERSON 1
-int projectionType = ORTHOGRAPHIC;
-
-// Shader file utility functions
-#include "shaderutils.h"
-#define X 0
-#define Y 1
-#define Z 2
-#define RAD2DEG (180.0f/3.14159f)
-#define DEG2RAD (3.14159f/180.0f)
-
-// lists
-#define CUBE 1
-#define WALL 2
-#define ROOM 3
-#define TABLE_CHAIRS 4
-#define MIRROR 5
-#define FAN 6
-
-// Color identifiers
-#define RED 0
-#define GREEN 1
-#define BLUE 2
-#define GRAY 3
-#define YELLOW 4
-#define TIE_COLOR 5
-#define PINK 6
-#define CYAN 7
-#define VIOLET 8
-#define BLACK 9
-#define BROWN 10
-// Vertex colors
-GLfloat current_color[][3] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 0.5f, 0.5f}, { 1.0f, 1.0f, 0.0f } ,{0.69f, 0.13f, 0.13f}, {1.0f,0.35f,0.39f},{0.0f, 1.0f, 1.0f},
-{0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f} };
-GLint color = RED;
-
-// Global camera vectors
-GLfloat eye[3] = { 1.0f,1.0f,1.0f };
-GLfloat at[3] = { 0.0f,0.0f,0.0f };
-GLfloat up[3] = { 0.0f,1.0f,0.0f };
-
-GLfloat eye_p[3] = { 0, 5, 0 };
-GLfloat at_p[3] = { 0, 0, 1 };
-GLfloat up_p[3] = { 0, 1, 0 };
-GLfloat eye_p_new[3] = {0, 0, 0};
 
 // Global screen dimensions
 GLint ww, hh;
@@ -91,6 +44,8 @@ void idlefunc();
 void reshape(int w, int h);
 void create_lists();
 void setColor(GLint colorID);
+void texturecube();
+void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[], GLfloat t2[], GLfloat t3[], GLfloat t4[]);
 
 int main(int argc, char *argv[])
 {
@@ -162,20 +117,21 @@ void display()
 	{
 		xratio = (GLfloat)ww / (GLfloat)hh;
 	}
-	glOrtho(-25.0f*xratio, 25.0f*xratio, -25.0f*yratio, 25.0f*yratio, -25.0f, 25.0f);
-
 
 	if (projectionType == ORTHOGRAPHIC) {
+		glOrtho(-25.0f * xratio, 25.0f * xratio, -25.0f * yratio, 25.0f * yratio, -25.0f, 25.0f);
 		// Set modelview matrix
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		gluLookAt(eye[X], eye[Y], eye[Z], at[X], at[Y], at[Z], up[X], up[Y], up[Z]);
 	}
 	else if (projectionType == FIRSTPERSON) {
+		gluPerspective(45.0f, 1.0f, 0.5f, 50.0f);
 		// Set modelview matrix
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		//gluLookAt(new coordinates)
+		// gluLookAt(first person coordinates)
+		gluLookAt(eye_fp[X], eye_fp[Y], eye_fp[Z], at_fp[X], at_fp[Y], at_fp[Z], up_fp[X], up_fp[Y], up_fp[Z]);
 	}
 
 
@@ -231,7 +187,7 @@ void render_Scene()
 	// door
 	glPushMatrix();
 	glTranslatef(0, -0.5, (-wall_length/2));
-	glScalef(1, 1, 0.1);
+	glScalef(0.6, 1, 0.1);
 	glutSolidCube(5.0);
 	glPopMatrix();
 
@@ -279,7 +235,7 @@ void keyfunc(unsigned char key, int x, int y)
 			}
 		}
 
-		// TODO: Adjust elevation angle
+		// Adjust elevation angle
 		if (key == 'w')
 		{
 			elevation += del;
@@ -298,21 +254,58 @@ void keyfunc(unsigned char key, int x, int y)
 		}
 		
 
-		// TODO: Compute cartesian camera position
+		// Compute cartesian camera position
 		eye[X] = (GLfloat)(radius * sin(azimuth * DEG2RAD) * sin(elevation * DEG2RAD));
 		eye[Y] = (GLfloat)(radius * cos(elevation * DEG2RAD));
 		eye[Z] = (GLfloat)(radius * cos(azimuth * DEG2RAD) * sin(elevation * DEG2RAD));
 	}
 	else if (projectionType == FIRSTPERSON) {
 		// w to move forwards
+		if (key == 'W' || key == 'w') {
+			eye_fp[X] -= (eye_fp[X] - at_fp[X]) *camera_step;
+			eye_fp[Z] -= (eye_fp[Z] - at_fp[Z]) * camera_step;
+
+			at_fp[X] = eye_fp[X] + cos(camera_theta);
+			at_fp[Z] = eye_fp[Z] + sin(camera_theta);
+		}
 		// s to move backwards
+		if (key == 'S' || key == 's') {
+			eye_fp[X] += (eye_fp[X] - at_fp[X]) * camera_step;
+			eye_fp[Z] += (eye_fp[Z] - at_fp[Z]) * camera_step;
+
+			at_fp[X] = eye_fp[X] + cos(camera_theta);
+			at_fp[Z] = eye_fp[Z] + sin(camera_theta);
+		}
 		// a to pivot left
+		if (key == 'A' || key == 'a') {
+			camera_theta += camera_dtheta;
+			if (camera_theta > 360.0f) {
+				camera_theta -= 360.0f;
+			}
+			at_fp[X] = eye_fp[X] + cos(camera_theta);
+			at_fp[Z] = eye_fp[Z] + sin(camera_theta);
+		}
 		// d to pivot right
+		if (key == 'D' || key == 'd') {
+			camera_theta -= camera_dtheta;
+			if (camera_theta < -360.0f) {
+				camera_theta += 360.0f;
+			}
+			at_fp[X] = eye_fp[X] + cos(camera_theta);
+			at_fp[Z] = eye_fp[Z] + sin(camera_theta);
+		}
+		// z to look up
+		if (key == 'Z' || key == 'z') {
+			at[Y] = eye_fp[Y] + sin(camera_theta);
+		}
+		// x to look down
+		if (key == 'X' || key == 'x') {
+
+		}
+
+
 	}
 
-	//eyePerspective[X]
-	//eyePerspective[Y]
-	//eyePerspective[Z]
 	// <esc> quits
 	if (key == 27)
 	{
@@ -461,4 +454,43 @@ void setColor(GLint colorID)
 {
 	glColor3fv(current_color[colorID]);
 
+}
+
+// Routine to draw textured cube
+void texturecube()
+{
+	// Top face
+	texquad(cube[4], cube[7], cube[6], cube[5], cube_tex[0], cube_tex[1], cube_tex[2], cube_tex[3]);
+
+	// Bottom face
+	texquad(cube[0], cube[1], cube[2], cube[3], cube_tex[4], cube_tex[5], cube_tex[6], cube_tex[7]);
+
+	// Left face
+	texquad(cube[2], cube[6], cube[7], cube[3], cube_tex[8], cube_tex[9], cube_tex[10], cube_tex[11]);
+
+	// Right face
+	texquad(cube[0], cube[4], cube[5], cube[1], cube_tex[12], cube_tex[13], cube_tex[14], cube_tex[15]);
+
+	// Front face
+	texquad(cube[1], cube[5], cube[6], cube[2], cube_tex[16], cube_tex[17], cube_tex[18], cube_tex[19]);
+
+	// Back face
+	texquad(cube[0], cube[3], cube[7], cube[4], cube_tex[20], cube_tex[21], cube_tex[22], cube_tex[23]);
+
+}
+
+// Routine to draw quadrilateral face
+void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[], GLfloat t2[], GLfloat t3[], GLfloat t4[])
+{
+	// Draw face 
+	glBegin(GL_POLYGON);
+	glTexCoord2fv(t1);
+	glVertex3fv(v1);
+	glTexCoord2fv(t2);
+	glVertex3fv(v2);
+	glTexCoord2fv(t3);
+	glVertex3fv(v3);
+	glTexCoord2fv(t4);
+	glVertex3fv(v4);
+	glEnd();
 }
