@@ -18,6 +18,8 @@ int projectionType = ORTHOGRAPHIC;
 #define TABLE_CHAIRS 4
 #define MIRROR 5
 #define FAN 6
+#define FIREPLACE 7
+#define DOOR 8
 
 // Color identifiers
 #define RED 0
@@ -77,9 +79,12 @@ GLfloat radius = 4.0f;
 // first person camera variables
 GLfloat camera_move_step = 0.20f;
 GLfloat camera_pivot_step = camera_move_step;
-GLfloat camera_theta = 0.0f;
-GLfloat camera_dtheta = 6.0f;
-
+GLfloat camera_theta = 0.0f *DEG2RAD;
+GLfloat camera_dtheta = 2.0f * DEG2RAD;
+GLfloat camera_y_theta = 0.0f * DEG2RAD;
+GLfloat camera_y_dtheta = 1.0f *DEG2RAD;
+#define CAMERA_LIMIT 45.0f*DEG2RAD
+#define CAMERA_LR_LIMIT 360.0f*DEG2RAD
 
 // House variables
 GLfloat wall_length = 10.0f;

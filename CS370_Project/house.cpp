@@ -136,7 +136,6 @@ void display()
 		gluLookAt(eye_fp[X], eye_fp[Y], eye_fp[Z], at_fp[X], at_fp[Y], at_fp[Z], up_fp[X], up_fp[Y], up_fp[Z]);
 	}
 
-
 	// Render scene
 	render_Scene();
 
@@ -158,7 +157,7 @@ void render_Scene()
 	// table and chairs
 	setColor(RED);
 	glPushMatrix();
-	glTranslatef(-11.0f, 0, 0);
+	glTranslatef(-11.0f, -wall_height+1, 0);
 	glCallList(TABLE_CHAIRS);
 	glPopMatrix();
 
@@ -188,9 +187,7 @@ void render_Scene()
 
 	// door
 	glPushMatrix();
-	glTranslatef(0, -wall_height/2, (-wall_length*2));
-	glScalef(2, 4, 1.1);
-	glCallList(CUBE);
+	glCallList(DOOR);
 	glPopMatrix();
 
 	// fan
@@ -200,18 +197,7 @@ void render_Scene()
 	
 	// fireplace
 	glPushMatrix();
-	setColor(BROWN);
-	glTranslatef(-wall_length+1.05, -1.0, 0);
-	glScalef(0.4, 0.7, 1);
-	glCallList(CUBE);
-	glPopMatrix();
-	
-
-	glPushMatrix();
-	setColor(RED);
-	glTranslatef(-wall_length + 1.0 ,-0.5, 0);
-	glScalef(0.4, 1, 1.5);
-	glCallList(CUBE);
+	glCallList(FIREPLACE);
 	glPopMatrix();
 
 }
@@ -279,7 +265,54 @@ void keyfunc(unsigned char key, int x, int y)
 			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
 		}
 		// a to pivot left
+		if (key == 'D' || key == 'd') {
+			camera_theta += camera_dtheta;
+			if(camera_theta > CAMERA_LR_LIMIT) {
+				camera_theta -= CAMERA_LR_LIMIT;
+			}
+			at_fp[X] = (eye_fp[X] + cos(camera_theta));
+			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
+		}
+		// d to pivot right
 		if (key == 'A' || key == 'a') {
+			camera_theta -= camera_dtheta;
+			if (camera_theta < -CAMERA_LR_LIMIT) {
+				camera_theta += CAMERA_LR_LIMIT;
+			}
+			at_fp[X] = (eye_fp[X] + cos(camera_theta));
+			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
+
+		}
+		// z to look up
+		if (key == 'Z' || key == 'z') {
+			camera_y_theta += camera_y_dtheta;
+			if (camera_y_theta > CAMERA_LIMIT) {
+				camera_y_theta = CAMERA_LIMIT;
+			}
+			at_fp[Y] = (eye_fp[Y] + sin(camera_y_theta));
+		}
+
+		// x to look down
+		if (key == 'X' || key == 'x') {
+			camera_y_theta -= camera_y_dtheta;
+			if (camera_y_theta < -CAMERA_LIMIT) {
+				camera_y_theta = -CAMERA_LIMIT;
+			}
+			at_fp[Y] = (eye_fp[Y] + sin(camera_y_theta));
+		
+
+		}
+	}
+
+		// <esc> quits
+	if (key == 27)
+	{
+		exit(0);
+	}
+
+	if (key == 'p' || key == 'P') {
+		projectionType = !projectionType;
+		if (FIRSTPERSON) {
 			camera_theta += camera_dtheta;
 			if (camera_theta > 360.0f) {
 				camera_theta -= 360.0f;
@@ -287,37 +320,7 @@ void keyfunc(unsigned char key, int x, int y)
 			at_fp[X] = (eye_fp[X] + cos(camera_theta));
 			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
 		}
-		// d to pivot right
-		if (key == 'D' || key == 'd') {
-			camera_theta -= camera_dtheta;
-			if (camera_theta < -360.0f) {
-				camera_theta += 360.0f;
-			}
-			at_fp[X] = (eye_fp[X] + cos(camera_theta));
-			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
-			// z to look up
-			if (key == 'Z' || key == 'z') {
-
-			}
-
-			// x to look down
-			if (key == 'X' || key == 'x') {
-
-			}
-
-
-		}
 	}
-
-		// <esc> quits
-		if (key == 27)
-		{
-			exit(0);
-		}
-
-		if (key == 'p' || key == 'P') {
-			projectionType = !projectionType;
-		}
 }
 
 // Idle callback
@@ -454,12 +457,41 @@ void create_lists()
 	glPopAttrib();
 	glEndList();
 
+	// fireplace list
+	glNewList(FIREPLACE, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	setColor(BROWN);
+	glTranslatef((-wall_length * 2) + 1.05, (-wall_height / 2) - 0.75, 0);
+	glScalef(1, 2.75, 3.25);
+	glCallList(CUBE);
+	glPopMatrix();
+
+
+	glPushMatrix();
+	setColor(RED);
+	glTranslatef((-wall_length * 2) + 1.0, -wall_height / 2, 0);
+	glScalef(1, 3.5, 4);
+	glCallList(CUBE);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
+	// door list
+	glNewList(DOOR, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glTranslatef(0, -wall_height / 2, (-wall_length * 2));
+	glScalef(2, 4, 1.1);
+	glCallList(CUBE);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 }
 
 void setColor(GLint colorID)
 {
 	glColor3fv(current_color[colorID]);
-
 }
 
 // Routine to draw textured cube
