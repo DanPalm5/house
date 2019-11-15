@@ -49,7 +49,12 @@ GLfloat cube[][3] = { { -1.0f, -1.0f, -1.0f }, { 1.0f, -1.0f, -1.0f }, { 1.0f, -
 204/582 = 0.350515464
 495/582 = 0.850515464
 */
-GLfloat cube_tex[][2] = { {} };
+GLfloat cube_tex[][2] = { {0,0}, {0, 0}, {0, 0}, {0, 0}, 
+						{0,0}, {0, 0}, {0, 0}, {0, 0}, 
+						{0,0}, {0, 0}, {0, 0}, {0, 0}, 
+						{0,0}, {0, 0}, {0, 0}, {0, 0},
+						{0,0}, {0, 0}, {0, 0}, {0, 0}, 
+						{0,0}, {0, 0}, {0, 0}, {0, 0}, };
 
 
 // Global camera vectors
@@ -57,8 +62,8 @@ GLfloat eye[3] = { 1.0f,1.0f,1.0f };
 GLfloat at[3] = { 0.0f,0.0f,0.0f };
 GLfloat up[3] = { 0.0f,1.0f,0.0f };
 
-GLfloat eye_fp[3] = { 0, 0, 0 };
-GLfloat at_fp[3] = { 0, 0, 0 };
+GLfloat eye_fp[3] = { 0, -3, 0 };
+GLfloat at_fp[3] = { 0, -3, 0 };
 GLfloat up_fp[3] = { 0, 1, 0 };
 
 
@@ -70,21 +75,22 @@ GLfloat del = 2.0f;
 GLfloat radius = 4.0f;
 
 // first person camera variables
-GLfloat camera_step = 0.20f;
+GLfloat camera_move_step = 0.20f;
+GLfloat camera_pivot_step = camera_move_step;
 GLfloat camera_theta = 0.0f;
 GLfloat camera_dtheta = 6.0f;
 
 
 // House variables
-GLfloat wall_length = 20;
-GLfloat wall_height = 15;
-GLfloat floor_scaleX = wall_length;
-GLfloat floor_scaleY = 0.05;
-GLfloat floor_scaleZ = wall_length/10;
+GLfloat wall_length = 10.0f;
+GLfloat wall_height = 7.5f;
+GLfloat floor_scaleX = wall_length*2;
+GLfloat floor_scaleY = 0.01;
+GLfloat floor_scaleZ = wall_length/5;
 
 
 // Tree variables
-GLfloat tree_offset = 12;
+GLfloat tree_offset = wall_length;
 GLfloat tree_base = 4.5;
 GLfloat tree_height = 6;
 GLfloat tree_slices = 50;

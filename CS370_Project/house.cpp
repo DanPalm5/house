@@ -121,6 +121,7 @@ void display()
 
 	if (projectionType == ORTHOGRAPHIC) {
 		glOrtho(-25.0f * xratio, 25.0f * xratio, -25.0f * yratio, 25.0f * yratio, -25.0f, 25.0f);
+
 		// Set modelview matrix
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -157,7 +158,7 @@ void render_Scene()
 	// table and chairs
 	setColor(RED);
 	glPushMatrix();
-	glTranslatef(-11.0f, -1, 0);
+	glTranslatef(-11.0f, 0, 0);
 	glCallList(TABLE_CHAIRS);
 	glPopMatrix();
 
@@ -169,7 +170,7 @@ void render_Scene()
 	// Christmas tree
 	glPushMatrix();
 	setColor(GREEN);
-	glTranslatef(tree_offset, 0, 0);
+	glTranslatef(tree_offset, -wall_height/2 , 0);
 	glRotatef(-90, 1, 0, 0);
 	glScalef(0.75, 0.75, 0.75);
 	glutSolidCone(tree_base, tree_height, tree_slices, tree_stacks);
@@ -180,16 +181,16 @@ void render_Scene()
 	GLUquadricObj* tree_stump;
 	tree_stump = gluNewQuadric();
 	gluQuadricDrawStyle(tree_stump, GLU_LINE);
-	glTranslatef(tree_offset, -3, 0);
+	glTranslatef(tree_offset, -wall_height, 0);
 	glRotatef(-90, 1, 0, 0);
 	gluCylinder(tree_stump, stump_radius,stump_radius, stump_height, stump_slices, stump_stacks);
 	glPopMatrix();
 
 	// door
 	glPushMatrix();
-	glTranslatef(0, -0.5, (-wall_length/2));
-	glScalef(0.6, 1, 0.1);
-	glutSolidCube(5.0);
+	glTranslatef(0, -wall_height/2, (-wall_length*2));
+	glScalef(2, 4, 1.1);
+	glCallList(CUBE);
 	glPopMatrix();
 
 	// fan
@@ -202,7 +203,7 @@ void render_Scene()
 	setColor(BROWN);
 	glTranslatef(-wall_length+1.05, -1.0, 0);
 	glScalef(0.4, 0.7, 1);
-	glutSolidCube(5.0);
+	glCallList(CUBE);
 	glPopMatrix();
 	
 
@@ -210,7 +211,7 @@ void render_Scene()
 	setColor(RED);
 	glTranslatef(-wall_length + 1.0 ,-0.5, 0);
 	glScalef(0.4, 1, 1.5);
-	glutSolidCube(5.0);
+	glCallList(CUBE);
 	glPopMatrix();
 
 }
@@ -263,19 +264,19 @@ void keyfunc(unsigned char key, int x, int y)
 	else if (projectionType == FIRSTPERSON) {
 		// w to move forwards
 		if (key == 'W' || key == 'w') {
-			eye_fp[X] -= (eye_fp[X] - at_fp[X]) *camera_step;
-			eye_fp[Z] -= (eye_fp[Z] - at_fp[Z]) * camera_step;
+			eye_fp[X] -= (eye_fp[X] - at_fp[X]) * camera_move_step;
+			eye_fp[Z] -= (eye_fp[Z] - at_fp[Z]) * camera_move_step;
 
-			at_fp[X] = eye_fp[X] + cos(camera_theta);
-			at_fp[Z] = eye_fp[Z] + sin(camera_theta);
+			at_fp[X] = (eye_fp[X] + cos(camera_theta));
+			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
 		}
 		// s to move backwards
 		if (key == 'S' || key == 's') {
-			eye_fp[X] += (eye_fp[X] - at_fp[X]) * camera_step;
-			eye_fp[Z] += (eye_fp[Z] - at_fp[Z]) * camera_step;
+			eye_fp[X] += (eye_fp[X] - at_fp[X]) * camera_move_step;
+			eye_fp[Z] += (eye_fp[Z] - at_fp[Z]) * camera_move_step;
 
-			at_fp[X] = eye_fp[X] + cos(camera_theta);
-			at_fp[Z] = eye_fp[Z] + sin(camera_theta);
+			at_fp[X] = (eye_fp[X] + cos(camera_theta));
+			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
 		}
 		// a to pivot left
 		if (key == 'A' || key == 'a') {
@@ -283,8 +284,8 @@ void keyfunc(unsigned char key, int x, int y)
 			if (camera_theta > 360.0f) {
 				camera_theta -= 360.0f;
 			}
-			at_fp[X] = eye_fp[X] + cos(camera_theta);
-			at_fp[Z] = eye_fp[Z] + sin(camera_theta);
+			at_fp[X] = (eye_fp[X] + cos(camera_theta));
+			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
 		}
 		// d to pivot right
 		if (key == 'D' || key == 'd') {
@@ -292,31 +293,31 @@ void keyfunc(unsigned char key, int x, int y)
 			if (camera_theta < -360.0f) {
 				camera_theta += 360.0f;
 			}
-			at_fp[X] = eye_fp[X] + cos(camera_theta);
-			at_fp[Z] = eye_fp[Z] + sin(camera_theta);
-		}
-		// z to look up
-		if (key == 'Z' || key == 'z') {
-			at[Y] = eye_fp[Y] + sin(camera_theta);
-		}
-		// x to look down
-		if (key == 'X' || key == 'x') {
+			at_fp[X] = (eye_fp[X] + cos(camera_theta));
+			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
+			// z to look up
+			if (key == 'Z' || key == 'z') {
+
+			}
+
+			// x to look down
+			if (key == 'X' || key == 'x') {
+
+			}
+
 
 		}
-
-
 	}
 
-	// <esc> quits
-	if (key == 27)
-	{
-		exit(0);
-	}
+		// <esc> quits
+		if (key == 27)
+		{
+			exit(0);
+		}
 
-	if (key == 'p' || key == 'P') {
-		projectionType = !projectionType;
-	}
-
+		if (key == 'p' || key == 'P') {
+			projectionType = !projectionType;
+		}
 }
 
 // Idle callback
@@ -342,7 +343,7 @@ void create_lists()
 	// cube list
 	glNewList(CUBE, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glutSolidCube(1.0);
+	texturecube();
 	glPopAttrib();
 	glEndList();
 
@@ -357,39 +358,42 @@ void create_lists()
 	// room list
 	glNewList(ROOM, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	
+		// 4 walls
 	glPushMatrix();
 	setColor(BLUE);
-	glTranslatef(-wall_length, 0, 0);
-	glScalef(0.4, 1, 1);
-	glCallList(WALL);
-	glPopMatrix();
-		//4 walls
-	glPushMatrix();
-	setColor(BLUE);
-	glTranslatef(wall_length, 0, 0);
-	glScalef(0.4, 1, 1);
+	glTranslatef(-wall_length*2, 0, 0);
+	glScalef(1, 1, 2);
 	glCallList(WALL);
 	glPopMatrix();
 
 	glPushMatrix();
 	setColor(BLUE);
-	glTranslatef(0, 0, wall_length * 0.5);
-	glRotatef(90, 0, 1, 0);
-	glScalef(0.4, 1, 2);
+	glTranslatef(wall_length*2, 0, 0);
+	glScalef(1, 1, 2);
 	glCallList(WALL);
 	glPopMatrix();
 
 	glPushMatrix();
 	setColor(BLUE);
-	glTranslatef(0, 0, -wall_length * 0.5);
+	glTranslatef(0, 0, wall_length*2);
 	glRotatef(90, 0, 1, 0);
-	glScalef(0.4, 1, 2);
+	glScalef(1, 1, 2);
 	glCallList(WALL);
 	glPopMatrix();
-		// floor
+
+	glPushMatrix();
+	setColor(BLUE);
+	glTranslatef(0, 0, -wall_length*2);
+	glRotatef(90, 0, 1, 0);
+	glScalef(1, 1, 2);
+	glCallList(WALL);
+	glPopMatrix();
+		
+	// floor
 	glPushMatrix();
 	setColor(GRAY);
-	glTranslatef(0, -3.0, 0);
+	glTranslatef(0, -wall_height, 0);
 	glRotatef(90, 0, 1, 0);
 	glScalef(floor_scaleX, floor_scaleY, floor_scaleZ);
 	glCallList(WALL);
@@ -420,13 +424,14 @@ void create_lists()
 	glNewList(MIRROR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glTranslatef(19.5, 0, 0);
-	glScalef(0.1f, 0.8, 1);
-	glutSolidCube(5.0);
+	glTranslatef((wall_length*2)-1.0, 0, 0);
+	glScalef(0.1f, 4, 4);
+	glCallList(CUBE);
 	glPopAttrib();
 	glPopMatrix();
 	glEndList();
 
+	// fan
 	glNewList(FAN, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
