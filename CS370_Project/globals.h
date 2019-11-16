@@ -21,6 +21,9 @@ int projectionType = ORTHOGRAPHIC;
 #define FIREPLACE 7
 #define DOOR 8
 #define WINDOW 9
+#define CHAIR_LEG 10
+#define CHAIR_SEAT 11
+#define FULL_CHAIR 12
 
 // Color identifiers
 #define RED 0
@@ -106,3 +109,15 @@ GLfloat stump_stacks = 300;
 GLfloat fan_radius = 2;
 GLfloat fan_slices = 20;
 GLfloat fan_stacks = 20;
+
+// chair variables
+#define CHAIR_LEG_SCALEX 0.20f
+#define CHAIR_LEG_SCALEY 1.0f
+#define CHAIR_LEG_SCALEZ 0.20f
+#define CHAIR_WIDTH 1.25f
+#define CHAIR_LEG_TO_SEAT_HEIGHT 0.75f
+#define CHAIR_SEAT_SCALE 1
+#define CHAIR_SEAT_SCALE_Y 0.2
+
+#define CHAIR_TO_CHAIR_DIST 7.0f
+

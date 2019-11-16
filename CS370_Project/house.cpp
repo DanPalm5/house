@@ -157,7 +157,7 @@ void render_Scene()
 	// table and chairs
 	setColor(RED);
 	glPushMatrix();
-	glTranslatef(-11.0f, -wall_height+1, 0);
+	glTranslatef(-7.0f, -wall_height+1, 7);
 	glCallList(TABLE_CHAIRS);
 	glPopMatrix();
 
@@ -204,7 +204,7 @@ void render_Scene()
 	glPushMatrix();
 	glCallList(WINDOW);
 	glPopMatrix();
-
+	
 }
 
 // Keyboard callback
@@ -423,17 +423,22 @@ void create_lists()
 	// table and chairs
 	glNewList(TABLE_CHAIRS, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	setColor(RED);
 	glPushMatrix();
-	glutSolidCube(3.0);
-	glTranslatef(-3.0, 0.0, 0.0);
-	glutSolidCube(1.0);
-	glTranslatef(6.0, 0.0, 0.0);
-	glutSolidCube(1.0);
-	glTranslatef(-3.0, 0.0, -3.0);
-	glutSolidCube(1.0);
-	glTranslatef(0.0, 0.0, 6.0);
-	glutSolidCube(1.0);
+		// table
+	glTranslatef(CHAIR_TO_CHAIR_DIST / 4, 0, -CHAIR_TO_CHAIR_DIST / 4);
+	glScalef(4, 1, 4);
+	glCallList(FULL_CHAIR);
+	glPopMatrix();
+		// 4 chairs
+	glPushMatrix();
+	glTranslatef(-CHAIR_TO_CHAIR_DIST, 0.0, 0.0);
+	glCallList(FULL_CHAIR);
+	glTranslatef(CHAIR_TO_CHAIR_DIST*2, 0.0, 0.0);
+	glCallList(FULL_CHAIR);
+	glTranslatef(-CHAIR_TO_CHAIR_DIST, 0.0, -CHAIR_TO_CHAIR_DIST);
+	glCallList(FULL_CHAIR);
+	glTranslatef(0.0, 0.0, CHAIR_TO_CHAIR_DIST*2);
+	glCallList(FULL_CHAIR);
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
@@ -508,9 +513,52 @@ void create_lists()
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
 	setColor(GLASS);
-	glTranslatef(0, wall_height / 3, (wall_length * 2));
+	glTranslatef(0, -wall_height / 3, (wall_length * 2));
 	glScalef(3, 3, 1.1);
 	glCallList(CUBE);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
+	// chair leg
+	glNewList(CHAIR_LEG, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	setColor(BROWN);
+	glScalef(CHAIR_LEG_SCALEX, CHAIR_LEG_SCALEY, CHAIR_LEG_SCALEZ);
+	glCallList(CUBE);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
+	// chair seat
+	glNewList(CHAIR_SEAT, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	setColor(BROWN);
+	glTranslatef(0, 0.25, 0);
+	glScalef(CHAIR_SEAT_SCALE, CHAIR_SEAT_SCALE_Y, CHAIR_SEAT_SCALE);
+	glCallList(CUBE);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
+	// complete chair list
+	glNewList(FULL_CHAIR, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glCallList(CHAIR_LEG);
+	glTranslatef(-CHAIR_WIDTH, 0, 0);
+	glCallList(CHAIR_LEG);
+	glTranslatef(0, 0, CHAIR_WIDTH);
+	glCallList(CHAIR_LEG);
+	glTranslatef(CHAIR_WIDTH, 0, 0);
+	glCallList(CHAIR_LEG);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-CHAIR_WIDTH / 2, CHAIR_LEG_TO_SEAT_HEIGHT, CHAIR_WIDTH / 2);
+	glCallList(CHAIR_SEAT);
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
