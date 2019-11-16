@@ -200,6 +200,11 @@ void render_Scene()
 	glCallList(FIREPLACE);
 	glPopMatrix();
 
+	// window
+	glPushMatrix();
+	glCallList(WINDOW);
+	glPopMatrix();
+
 }
 
 // Keyboard callback
@@ -255,6 +260,7 @@ void keyfunc(unsigned char key, int x, int y)
 
 			at_fp[X] = (eye_fp[X] + cos(camera_theta));
 			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
+
 		}
 		// s to move backwards
 		if (key == 'S' || key == 's') {
@@ -263,6 +269,7 @@ void keyfunc(unsigned char key, int x, int y)
 
 			at_fp[X] = (eye_fp[X] + cos(camera_theta));
 			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
+
 		}
 		// a to pivot left
 		if (key == 'D' || key == 'd') {
@@ -300,7 +307,6 @@ void keyfunc(unsigned char key, int x, int y)
 			}
 			at_fp[Y] = (eye_fp[Y] + sin(camera_y_theta));
 		
-
 		}
 	}
 
@@ -402,6 +408,15 @@ void create_lists()
 	glCallList(WALL);
 	glPopMatrix();
 
+	// ceiling
+	glPushMatrix();
+	setColor(GRAY);
+	glTranslatef(0, wall_height, 0);
+	glRotatef(90, 0, 1, 0);
+	glScalef(floor_scaleX, floor_scaleY, floor_scaleZ);
+	//glCallList(WALL);
+	glPopMatrix();
+
 	glPopAttrib();
 	glEndList();// end room list
 
@@ -427,7 +442,7 @@ void create_lists()
 	glNewList(MIRROR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glTranslatef((wall_length*2)-1.0, 0, 0);
+	glTranslatef((wall_length*2)-1.0, 0, -5.0f);
 	glScalef(0.1f, 4, 4);
 	glCallList(CUBE);
 	glPopAttrib();
@@ -475,7 +490,7 @@ void create_lists()
 	glCallList(CUBE);
 	glPopMatrix();
 	glPopAttrib();
-	glEndList();
+	glEndList();  // end fireplace list
 
 	// door list
 	glNewList(DOOR, GL_COMPILE);
@@ -483,6 +498,18 @@ void create_lists()
 	glPushMatrix();
 	glTranslatef(0, -wall_height / 2, (-wall_length * 2));
 	glScalef(2, 4, 1.1);
+	glCallList(CUBE);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
+	// window list
+	glNewList(WINDOW, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	setColor(GLASS);
+	glTranslatef(0, wall_height / 3, (wall_length * 2));
+	glScalef(3, 3, 1.1);
 	glCallList(CUBE);
 	glPopMatrix();
 	glPopAttrib();

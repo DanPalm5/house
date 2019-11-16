@@ -20,6 +20,7 @@ int projectionType = ORTHOGRAPHIC;
 #define FAN 6
 #define FIREPLACE 7
 #define DOOR 8
+#define WINDOW 9
 
 // Color identifiers
 #define RED 0
@@ -33,9 +34,10 @@ int projectionType = ORTHOGRAPHIC;
 #define VIOLET 8
 #define BLACK 9
 #define BROWN 10
+#define GLASS 11
 // Vertex colors
 GLfloat current_color[][3] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 0.5f, 0.5f}, { 1.0f, 1.0f, 0.0f } ,{0.69f, 0.13f, 0.13f}, {1.0f,0.35f,0.39f},{0.0f, 1.0f, 1.0f},
-{0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f} };
+{0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f}, {0.658f, 0.8f, 0.843f} };
 GLint color = RED;
 
 // cube vertices
@@ -44,13 +46,7 @@ GLfloat cube[][3] = { { -1.0f, -1.0f, -1.0f }, { 1.0f, -1.0f, -1.0f }, { 1.0f, -
 { 1.0f, 1.0f, 1.0f }, { -1.0f, 1.0f, 1.0f } };
 
 
-// Cube texture coords
-/*
-408/582 = 0.701030928
-41/313 = 0.130990415
-204/582 = 0.350515464
-495/582 = 0.850515464
-*/
+// texture coordinates
 GLfloat cube_tex[][2] = { {0,0}, {0, 0}, {0, 0}, {0, 0}, 
 						{0,0}, {0, 0}, {0, 0}, {0, 0}, 
 						{0,0}, {0, 0}, {0, 0}, {0, 0}, 
