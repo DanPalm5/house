@@ -24,6 +24,7 @@ int projectionType = ORTHOGRAPHIC;
 #define CHAIR_LEG 10
 #define CHAIR_SEAT 11
 #define FULL_CHAIR 12
+#define FLOOR 13
 
 // Color identifiers
 #define RED 0
@@ -38,6 +39,11 @@ int projectionType = ORTHOGRAPHIC;
 #define BLACK 9
 #define BROWN 10
 #define GLASS 11
+
+// texture constants
+#define WALL_TEXTURE 0
+#define FLOOR_TEXTURE 1
+#define NUM_TEXTURES 2
 // Vertex colors
 GLfloat current_color[][3] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 0.5f, 0.5f}, { 1.0f, 1.0f, 0.0f } ,{0.69f, 0.13f, 0.13f}, {1.0f,0.35f,0.39f},{0.0f, 1.0f, 1.0f},
 {0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f}, {0.658f, 0.8f, 0.843f} };
@@ -47,15 +53,6 @@ GLint color = RED;
 GLfloat cube[][3] = { { -1.0f, -1.0f, -1.0f }, { 1.0f, -1.0f, -1.0f }, { 1.0f, -1.0f, 1.0f },
 { -1.0f, -1.0f, 1.0f }, { -1.0f, 1.0f, -1.0f }, { 1.0f, 1.0f, -1.0f },
 { 1.0f, 1.0f, 1.0f }, { -1.0f, 1.0f, 1.0f } };
-
-
-// texture coordinates
-GLfloat cube_tex[][2] = { {0,0}, {0, 0}, {0, 0}, {0, 0}, 
-						{0,0}, {0, 0}, {0, 0}, {0, 0}, 
-						{0,0}, {0, 0}, {0, 0}, {0, 0}, 
-						{0,0}, {0, 0}, {0, 0}, {0, 0},
-						{0,0}, {0, 0}, {0, 0}, {0, 0}, 
-						{0,0}, {0, 0}, {0, 0}, {0, 0}, };
 
 
 // Global camera vectors
@@ -121,3 +118,20 @@ GLfloat fan_stacks = 20;
 
 #define CHAIR_TO_CHAIR_DIST 7.0f
 
+// textures
+
+	// texture array
+	GLuint tex_ids[NUM_TEXTURES];
+
+	// Texture files
+	char texture_files[NUM_TEXTURES][20] = { {"wall_texture.png"}, {"floor_texture.jpg"} };
+
+
+	// texture coordinates
+
+GLfloat cube_tex[][2] = { {0,1}, {0, 0}, {1, 0}, {1,1},
+							{1,0}, {1, 1}, {1, 0}, {0,0},
+							{0,0}, {0, 1}, {1, 1}, {1,0},
+							{1,0}, {1, 1}, {0, 0}, {0,0},
+							{1,0}, {1, 1}, {0, 1}, {0,0},
+							{0,0}, {1, 0}, {1, 1}, {0,1} };

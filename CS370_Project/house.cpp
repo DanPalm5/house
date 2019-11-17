@@ -47,6 +47,9 @@ void create_lists();
 void setColor(GLint colorID);
 void texturecube();
 void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[], GLfloat t2[], GLfloat t3[], GLfloat t4[]);
+void load_image();
+bool load_textures();
+
 
 int main(int argc, char *argv[])
 {
@@ -80,6 +83,10 @@ int main(int argc, char *argv[])
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
+	// Set initial ambient light
+	GLfloat background[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	set_AmbientLight(background);
+
 	// Load shader programs
 	defaultShaderProg = load_shaders(defaultVertexFile,defaultFragmentFile);
 	lightShaderProg = load_shaders(lightVertexFile, lightFragmentFile);
@@ -87,6 +94,12 @@ int main(int argc, char *argv[])
 	numLights_param = glGetUniformLocation(lightShaderProg, "numLights");
 	texSampler = glGetUniformLocation(textureShaderProg, "texMap");
 	glUseProgram(defaultShaderProg);
+
+	// Load textures
+	if (!load_textures())
+	{
+		exit(0);
+	}
 
 	//create lists
 	create_lists();
@@ -149,6 +162,7 @@ void display()
 // Scene render function
 void render_Scene()
 {
+	//UseProgram(textureShaderProg);
 	// draw room
 	glPushMatrix();
 	glCallList(ROOM);
@@ -356,18 +370,37 @@ void create_lists()
 	glPopAttrib();
 	glEndList();
 
+	// floor and ceiling list
+
+	glNewList(FLOOR, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glPushMatrix();
+	glBindTexture(GL_TEXTURE_2D, tex_ids[FLOOR_TEXTURE]);
+	glScalef(1, wall_height, wall_length);
+	texturecube();
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
 	// wall list
 	glNewList(WALL, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glPushMatrix();
+	glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEXTURE]);
 	glScalef(1, wall_height, wall_length);
-	glCallList(CUBE);
+	texturecube();
+	glPopMatrix();
 	glPopAttrib();
 	glEndList();
 
 	// room list
 	glNewList(ROOM, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	
+	glUseProgram(defaultShaderProg);
 		// 4 walls
 	glPushMatrix();
 	setColor(BLUE);
@@ -405,7 +438,7 @@ void create_lists()
 	glTranslatef(0, -wall_height, 0);
 	glRotatef(90, 0, 1, 0);
 	glScalef(floor_scaleX, floor_scaleY, floor_scaleZ);
-	glCallList(WALL);
+	glCallList(FLOOR);
 	glPopMatrix();
 
 	// ceiling
@@ -414,7 +447,7 @@ void create_lists()
 	glTranslatef(0, wall_height, 0);
 	glRotatef(90, 0, 1, 0);
 	glScalef(floor_scaleX, floor_scaleY, floor_scaleZ);
-	//glCallList(WALL);
+	//glCallList(FLOOR;
 	glPopMatrix();
 
 	glPopAttrib();
@@ -423,6 +456,7 @@ void create_lists()
 	// table and chairs
 	glNewList(TABLE_CHAIRS, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
 	glPushMatrix();
 		// table
 	glTranslatef(CHAIR_TO_CHAIR_DIST / 4, 0, -CHAIR_TO_CHAIR_DIST / 4);
@@ -446,6 +480,7 @@ void create_lists()
 	// Mirror
 	glNewList(MIRROR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
 	glPushMatrix();
 	glTranslatef((wall_length*2)-1.0, 0, -5.0f);
 	glScalef(0.1f, 4, 4);
@@ -457,6 +492,8 @@ void create_lists()
 	// fan
 	glNewList(FAN, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
+
 	glPushMatrix();
 	setColor(VIOLET);
 	glTranslatef(0, wall_height / 2, 0);
@@ -480,6 +517,8 @@ void create_lists()
 	// fireplace list
 	glNewList(FIREPLACE, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
+
 	glPushMatrix();
 	setColor(BROWN);
 	glTranslatef((-wall_length * 2) + 1.05, (-wall_height / 2) - 0.75, 0);
@@ -500,6 +539,8 @@ void create_lists()
 	// door list
 	glNewList(DOOR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
+
 	glPushMatrix();
 	glTranslatef(0, -wall_height / 2, (-wall_length * 2));
 	glScalef(2, 4, 1.1);
@@ -511,6 +552,8 @@ void create_lists()
 	// window list
 	glNewList(WINDOW, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
+
 	glPushMatrix();
 	setColor(GLASS);
 	glTranslatef(0, -wall_height / 3, (wall_length * 2));
@@ -523,6 +566,8 @@ void create_lists()
 	// chair leg
 	glNewList(CHAIR_LEG, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
+
 	glPushMatrix();
 	setColor(BROWN);
 	glScalef(CHAIR_LEG_SCALEX, CHAIR_LEG_SCALEY, CHAIR_LEG_SCALEZ);
@@ -534,6 +579,8 @@ void create_lists()
 	// chair seat
 	glNewList(CHAIR_SEAT, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
+
 	glPushMatrix();
 	setColor(BROWN);
 	glTranslatef(0, 0.25, 0);
@@ -546,6 +593,8 @@ void create_lists()
 	// complete chair list
 	glNewList(FULL_CHAIR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
+
 	glPushMatrix();
 	glCallList(CHAIR_LEG);
 	glTranslatef(-CHAIR_WIDTH, 0, 0);
@@ -568,6 +617,40 @@ void setColor(GLint colorID)
 {
 	glColor3fv(current_color[colorID]);
 }
+
+void load_image() 
+{
+
+}
+
+bool load_textures() 
+{
+	for (int i = 0; i < NUM_TEXTURES; i++)
+	{
+		// TODO: Load images
+		tex_ids[i] = SOIL_load_OGL_texture(texture_files[i], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
+
+		// Set texture properties if successfully loaded
+		if (tex_ids[i] != 0)
+		{
+			// TODO: Set scaling filters
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+
+			// TODO: Set wrapping modes
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		}
+		// Otherwise texture failed to load
+		else
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+
 
 // Routine to draw textured cube
 void texturecube()
@@ -592,7 +675,7 @@ void texturecube()
 
 }
 
-// Routine to draw quadrilateral face
+//Routine to draw quadrilateral face
 void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[], GLfloat t2[], GLfloat t3[], GLfloat t4[])
 {
 	// Draw face 
