@@ -16,7 +16,7 @@ int projectionType = ORTHOGRAPHIC;
 #define WALL 2
 #define ROOM 3
 #define TABLE_CHAIRS 4
-#define MIRROR 5
+#define ART 5
 #define FAN 6
 #define FIREPLACE 7
 #define DOOR 8
@@ -25,6 +25,9 @@ int projectionType = ORTHOGRAPHIC;
 #define CHAIR_SEAT 11
 #define FULL_CHAIR 12
 #define FLOOR 13
+#define TREE 14
+#define TABLE_TOP 15
+#define CEILING 16
 
 // Color identifiers
 #define RED 0
@@ -40,10 +43,6 @@ int projectionType = ORTHOGRAPHIC;
 #define BROWN 10
 #define GLASS 11
 
-// texture constants
-#define WALL_TEXTURE 0
-#define FLOOR_TEXTURE 1
-#define NUM_TEXTURES 2
 // Vertex colors
 GLfloat current_color[][3] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 0.5f, 0.5f}, { 1.0f, 1.0f, 0.0f } ,{0.69f, 0.13f, 0.13f}, {1.0f,0.35f,0.39f},{0.0f, 1.0f, 1.0f},
 {0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f}, {0.658f, 0.8f, 0.843f} };
@@ -94,11 +93,11 @@ GLfloat floor_scaleZ = wall_length/5;
 GLfloat tree_offset = wall_length;
 GLfloat tree_base = 4.5;
 GLfloat tree_height = 6;
-GLfloat tree_slices = 50;
-GLfloat tree_stacks = 50;
+GLfloat tree_slices = 500;
+GLfloat tree_stacks = 500;
 
 GLfloat stump_radius = 1;
-GLfloat stump_height = 4;
+GLfloat stump_height = 3;
 GLfloat stump_slices = 300;
 GLfloat stump_stacks = 300;
 
@@ -119,12 +118,27 @@ GLfloat fan_stacks = 20;
 #define CHAIR_TO_CHAIR_DIST 7.0f
 
 // textures
+// texture constants
+#define WALL_TEXTURE 0
+#define FLOOR_TEXTURE 1
+#define DOOR_TEXTURE 2
+#define STOOL_TEXTURE 3
+#define STOOL_LEG_TEXTURE 4
+#define FIRE 5
+#define MANTLE 6
+#define ARTWORK 7
+#define TREE_TOP_TEXTURE 8
+#define TREE_STUMP_TEXTURE 9
+#define CEILING_TEXTURE 10
+#define NUM_TEXTURES 11
 
 	// texture array
 	GLuint tex_ids[NUM_TEXTURES];
 
 	// Texture files
-	char texture_files[NUM_TEXTURES][20] = { {"wall_texture.png"}, {"floor_texture.jpg"} };
+	char texture_files[NUM_TEXTURES][20] = { {"wall_texture.png"}, {"wood_floor_tex.jpg"} , {"door_texture.jpg"}, 
+											{"stool_texture.jpg"}, {"stool_leg.jpeg"}, {"fire_tex.jpg"}, 
+											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, {"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"} };
 
 
 	// texture coordinates
