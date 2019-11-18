@@ -80,6 +80,7 @@ GLfloat camera_y_theta = 0.0f * DEG2RAD;
 GLfloat camera_y_dtheta = 1.0f *DEG2RAD;
 #define CAMERA_LIMIT 45.0f*DEG2RAD
 #define CAMERA_LR_LIMIT 360.0f*DEG2RAD
+#define EYE_LIMIT wall_length*1.65
 
 // House variables
 GLfloat wall_length = 10.0f;
@@ -90,11 +91,14 @@ GLfloat floor_scaleZ = wall_length/5;
 
 
 // Tree variables
-GLfloat tree_offset = wall_length;
+GLfloat tree_offset = wall_length*1.5;
 GLfloat tree_base = 4.5;
 GLfloat tree_height = 6;
 GLfloat tree_slices = 500;
 GLfloat tree_stacks = 500;
+GLfloat tree_cover_inner_rad = 0.1f;
+GLfloat tree_cover_outer_rad = 4.5f;
+GLfloat tree_cover_height = 0.2f;
 
 GLfloat stump_radius = 1;
 GLfloat stump_height = 3;
@@ -130,7 +134,11 @@ GLfloat fan_stacks = 20;
 #define TREE_TOP_TEXTURE 8
 #define TREE_STUMP_TEXTURE 9
 #define CEILING_TEXTURE 10
-#define NUM_TEXTURES 11
+#define TREE_COVER_TEXTURE 11
+#define PRESENT_ONE 12
+#define PRESENT_TWO 13
+#define PRESENT_THREE 14
+#define NUM_TEXTURES 15
 
 	// texture array
 	GLuint tex_ids[NUM_TEXTURES];
@@ -138,7 +146,9 @@ GLfloat fan_stacks = 20;
 	// Texture files
 	char texture_files[NUM_TEXTURES][20] = { {"wall_texture.png"}, {"wood_floor_tex.jpg"} , {"door_texture.jpg"}, 
 											{"stool_texture.jpg"}, {"stool_leg.jpeg"}, {"fire_tex.jpg"}, 
-											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, {"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"} };
+											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
+											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
+											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"} };
 
 
 	// texture coordinates
