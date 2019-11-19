@@ -56,6 +56,8 @@ void texturecube();
 void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[], GLfloat t2[], GLfloat t3[], GLfloat t4[]);
 void load_image();
 bool load_textures();
+void create_Mirror();
+void render_Mirror();
 
 
 int main(int argc, char *argv[])
@@ -133,6 +135,9 @@ int main(int argc, char *argv[])
 // Display callback
 void display()
 {
+	// pass 1
+	create_Mirror();
+
 	// Reset background
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -172,6 +177,9 @@ void display()
 
 	// Render scene
 	render_Scene();
+
+	// render mirror
+	render_Mirror();
 
 	// Flush buffer
 	glFlush();
@@ -675,43 +683,43 @@ void create_lists()
 	glNewList(TREE, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 
-	// top
-	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_TOP_TEXTURE]);
-	glTranslatef(tree_offset, (-wall_height / 2) - 1, tree_offset * 0.9);
-	glRotatef(-90, 1, 0, 0);
-	glScalef(0.75, 0.75, 0.75);
-	gluCylinder(tree_top, tree_base, 0.1, tree_height, tree_slices, tree_stacks);
-	glPopMatrix();
-	//base
-	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_STUMP_TEXTURE]);
-	glTranslatef(tree_offset, -wall_height, tree_offset * 0.9);
-	glRotatef(-90, 1, 0, 0);
-	gluCylinder(tree_stump, stump_radius, stump_radius, stump_height, stump_slices, stump_stacks);
-	glPopMatrix();
+		// top
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_TOP_TEXTURE]);
+		glTranslatef(tree_offset, (-wall_height / 2) - 1, tree_offset * 0.9);
+		glRotatef(-90, 1, 0, 0);
+		glScalef(0.75, 0.75, 0.75);
+		gluCylinder(tree_top, tree_base, 0.1, tree_height, tree_slices, tree_stacks);
+		glPopMatrix();
+		//base
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_STUMP_TEXTURE]);
+		glTranslatef(tree_offset, -wall_height, tree_offset * 0.9);
+		glRotatef(-90, 1, 0, 0);
+		gluCylinder(tree_stump, stump_radius, stump_radius, stump_height, stump_slices, stump_stacks);
+		glPopMatrix();
 
 
-	// cover
-	glPushMatrix();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_COVER_TEXTURE]);
-	glTranslatef(tree_offset, -wall_height + 0.15f, tree_offset * 0.9);
-	glRotatef(-90, 1, 0, 0);
-	glScalef(0.75, 0.75, 0.75);
-	gluDisk(tree_cover, tree_cover_inner_rad, tree_cover_outer_rad, tree_slices, tree_stacks);
-	glDisable(GL_BLEND);
-	glPopMatrix();
+		// cover
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_COVER_TEXTURE]);
+		glTranslatef(tree_offset, -wall_height + 0.15f, tree_offset * 0.9);
+		glRotatef(-90, 1, 0, 0);
+		glScalef(0.75, 0.75, 0.75);
+		gluDisk(tree_cover, tree_cover_inner_rad, tree_cover_outer_rad, tree_slices, tree_stacks);
+		glDisable(GL_BLEND);
+		glPopMatrix();
 
 
-	// presents
+		// presents
 		
 			//1
 		glPushMatrix();
@@ -743,7 +751,16 @@ void create_lists()
 		glPopMatrix();
 
 		glPopAttrib();
-		glEndList();
+	glEndList();
+
+	glNewList(MIRROR, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(defaultShaderProg);
+	glPushMatrix();
+
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
 
 
@@ -765,8 +782,19 @@ bool load_textures()
 	for (int i = 0; i < NUM_TEXTURES; i++)
 	{
 		// TODO: Load images
-		tex_ids[i] = SOIL_load_OGL_texture(texture_files[i], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
+		if (i == ENVIRONMENT) {
+			tex_ids[ENVIRONMENT] = SOIL_load_OGL_texture(texture_files[0], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+			// Set scaling filters (no mipmap)
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			// Set wrapping modes (clamped)
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		}
+		else {
+			tex_ids[i] = SOIL_load_OGL_texture(texture_files[i], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
 
+		}
 		// Set texture properties if successfully loaded
 		if (tex_ids[i] != 0)
 		{
@@ -834,4 +862,55 @@ void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[
 	glTexCoord2fv(t4);
 	glVertex3fv(v4);
 	glEnd();
+}
+
+void create_Mirror() 
+{
+	// PASS 1 - Render reflected scene
+	// Reset background
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// TODO: Set projection matrix for flat "mirror" camera
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-2, 2, -3, 3, 1, 30);
+	// TODO: Set modelview matrix positioning "mirror" camera
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(-wall_length*2, -wall_height/2, -wall_length, 0, -wall_height/2, 0, 0, 1, 0);
+	// TODO: Render scene from mirror
+	render_Scene();
+	glFinish();
+
+	// TODO: Copy scene to texture
+	glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 512, 512, 0);
+}
+void render_Mirror()
+{
+	glPushMatrix();
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	// TODO: Draw mirror surface
+	glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
+	glBegin(GL_POLYGON);
+	glTexCoord2d(0, 0);
+	glVertex3f((-wall_length*2 + 1.25), -4, -8);
+	glTexCoord2d(0, 1);
+	glVertex3f((-wall_length*2 + 1.25), 3, -8);
+	glTexCoord2d(1, 1);
+	glVertex3f((-wall_length*2  + 1.25), 3, -15);
+	glTexCoord2d(1, 0);
+	glVertex3f((-wall_length*2 + 1.25), -4, -15);
+	glEnd();
+	
+	// Draw mirror frame
+	//glBegin(GL_LINE_LOOP);
+	//glVertex3f(-7.0f, -3.0f, 2.0f);
+	//glVertex3f(-7.0f, -3.0f, -6.0f);
+	//glVertex3f(-7.0f, 5.0f, -6.0f);
+	//glVertex3f(-7.0f, 5.0f, 2.0f);
+	//glEnd();
+
+	glPopMatrix();
 }

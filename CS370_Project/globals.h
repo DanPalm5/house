@@ -28,6 +28,7 @@ int projectionType = ORTHOGRAPHIC;
 #define TREE 14
 #define TABLE_TOP 15
 #define CEILING 16
+#define MIRROR 17
 
 // Color identifiers
 #define RED 0
@@ -138,7 +139,8 @@ GLfloat fan_stacks = 20;
 #define PRESENT_ONE 12
 #define PRESENT_TWO 13
 #define PRESENT_THREE 14
-#define NUM_TEXTURES 15
+#define ENVIRONMENT 15
+#define NUM_TEXTURES 16
 
 	// texture array
 	GLuint tex_ids[NUM_TEXTURES];
@@ -148,7 +150,8 @@ GLfloat fan_stacks = 20;
 											{"stool_texture.jpg"}, {"stool_leg.jpeg"}, {"fire_tex.jpg"}, 
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
-											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"} };
+											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
+												{"blank.bmp"} };
 
 
 	// texture coordinates
