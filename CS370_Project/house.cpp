@@ -35,8 +35,11 @@ GLuint defaultShaderProg;
 GLuint lightShaderProg;
 GLuint textureShaderProg;
 GLuint numLights_param;
-GLint numLights = 1;
+GLint numLights = 2;
 GLint texSampler;
+
+GLenum lights[4] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3 };
+
 
 // create quadric object
 GLUquadricObj* tree_stump;
@@ -183,14 +186,17 @@ void display()
 
 	// Flush buffer
 	glFlush();
-
+	
 	// Swap buffers
-	glutSwapBuffers();
+	glutSwapBuffers(); 
 }
 
 // Scene render function
 void render_Scene()
 {
+	//glUseProgram(lightShaderProg)
+	//set_SpotLight(GL_LIGHT0, &red_light, light1_pos, light1_dir, light1_cutoff, light1_exp);
+
 	// draw room
 	glPushMatrix();
 	glCallList(ROOM);
@@ -700,6 +706,7 @@ void create_lists()
 		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_STUMP_TEXTURE]);
 		glTranslatef(tree_offset, -wall_height, tree_offset * 0.9);
 		glRotatef(-90, 1, 0, 0);
+		glScalef(0.60, 0.60, 1);
 		gluCylinder(tree_stump, stump_radius, stump_radius, stump_height, stump_slices, stump_stacks);
 		glPopMatrix();
 
@@ -783,7 +790,7 @@ bool load_textures()
 	{
 		// TODO: Load images
 		if (i == ENVIRONMENT) {
-			tex_ids[ENVIRONMENT] = SOIL_load_OGL_texture(texture_files[0], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+			tex_ids[ENVIRONMENT] = SOIL_load_OGL_texture(texture_files[ENVIRONMENT], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 			// Set scaling filters (no mipmap)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -802,17 +809,9 @@ bool load_textures()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 
-			if (i == FIREPLACE) {
-				// TODO: Set wrapping modes
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-			}
-			else
-			{
-				// TODO: Set wrapping modes
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			}
+			// TODO: Set wrapping modes
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		}
 		// Otherwise texture failed to load
 		else
@@ -873,13 +872,18 @@ void create_Mirror()
 	// TODO: Set projection matrix for flat "mirror" camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-2, 2, -3, 3, 1, 30);
+	glOrtho(-5, 10, -3, 6, 1, 30);
+
 	// Set modelview matrix positioning "mirror" camera
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(-wall_length*2, -wall_height/2, -wall_length, 0, -wall_height/2, 0, 0, 1, 0);
+	gluLookAt(-wall_length*2.0f, -wall_height/2.0f, -wall_length, 0, -wall_height/2.0f, 0, 0, 1, 0);
+
 	// Render scene from mirror
-	render_Scene();
+	glPushMatrix();
+		render_Scene();
+	glPopMatrix();
+
 	glFinish();
 
 	// Copy scene to texture
@@ -888,29 +892,31 @@ void create_Mirror()
 }
 void render_Mirror()
 {
+
 	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	// Draw mirror surface
-	glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
-	glBegin(GL_POLYGON);
-	glTexCoord2f(1, 0);
-	glVertex3f((-wall_length * 2 + 5.25), -4, -15);
-	glTexCoord2f(1, 1);
-	glVertex3f((-wall_length * 2 + 5.25), 3, -15);
-	glTexCoord2f(0, 1);
-	glVertex3f((-wall_length * 2 + 5.25), 3, -8);
-	glTexCoord2f(0, 0);
-	glVertex3f((-wall_length*2 + 5.25), -4, -8);  // should be -wall_length*2 + 1.25 ,but is currently 5.25 to test to make sure image is not on other side
-	glEnd();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		// Draw mirror surface
+		glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
+		glBegin(GL_POLYGON);
+		glTexCoord2f(0, 0);//1, 0);
+			glVertex3f((-wall_length * 2 + 5.25), -4, -15);
+			glTexCoord2f(0, 1);//1, 1);
+			glVertex3f((-wall_length * 2 + 5.25), 3, -15);
+			glTexCoord2f(1, 1);//0, 1);
+			glVertex3f((-wall_length * 2 + 5.25), 3, -8);
+			glTexCoord2f(1, 0);//0, 0);
+			glVertex3f((-wall_length*2 + 5.25), -4, -8);  // should be -wall_length*2 + 1.25 ,but is currently 5.25 to test to make sure image is not on other side
+		glEnd();
+
 	
-	// Draw mirror frame
-	//glBegin(GL_LINE_LOOP);
-	//glVertex3f(-7.0f, -3.0f, 2.0f);
-	//glVertex3f(-7.0f, -3.0f, -6.0f);
-	//glVertex3f(-7.0f, 5.0f, -6.0f);
-	//glVertex3f(-7.0f, 5.0f, 2.0f);
-	//glEnd();
+		// Draw mirror frame
+		//glBegin(GL_LINE_LOOP);
+		//glVertex3f(-7.0f, -3.0f, 2.0f);
+		//glVertex3f(-7.0f, -3.0f, -6.0f);
+		//glVertex3f(-7.0f, 5.0f, -6.0f);
+		//glVertex3f(-7.0f, 5.0f, 2.0f);
+		//glEnd();
 
 	glPopMatrix();
 }

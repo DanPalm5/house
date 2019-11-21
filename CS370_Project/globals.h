@@ -93,8 +93,8 @@ GLfloat floor_scaleZ = wall_length/5;
 
 // Tree variables
 GLfloat tree_offset = wall_length*1.5;
-GLfloat tree_base = 4.5;
-GLfloat tree_height = 6;
+GLfloat tree_base = 3.75;
+GLfloat tree_height = 15;
 GLfloat tree_slices = 500;
 GLfloat tree_stacks = 500;
 GLfloat tree_cover_inner_rad = 0.1f;
@@ -162,3 +162,11 @@ GLfloat cube_tex[][2] = { {0,1}, {0, 0}, {1, 0}, {1,1},
 							{1,0}, {1, 1}, {0, 0}, {0,0},
 							{1,0}, {1, 1}, {0, 1}, {0,0},
 							{0,0}, {1, 0}, {1, 1}, {0,1} };
+
+
+
+//light1 (green spotlight) Parameters 
+GLfloat light1_pos[] = {-6, wall_height/2.0f, 6.0f };
+GLfloat light1_dir[] = { 0,-1,0};
+GLfloat light1_cutoff = 40;
+GLfloat light1_exp = 3;
