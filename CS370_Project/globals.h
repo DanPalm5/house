@@ -28,6 +28,7 @@ int projectionType = ORTHOGRAPHIC;
 #define TREE 14
 #define TABLE_TOP 15
 #define CEILING 16
+#define MIRROR 17
 
 // Color identifiers
 #define RED 0
@@ -92,8 +93,8 @@ GLfloat floor_scaleZ = wall_length/5;
 
 // Tree variables
 GLfloat tree_offset = wall_length*1.5;
-GLfloat tree_base = 4.5;
-GLfloat tree_height = 6;
+GLfloat tree_base = 3.75;
+GLfloat tree_height = 15;
 GLfloat tree_slices = 500;
 GLfloat tree_stacks = 500;
 GLfloat tree_cover_inner_rad = 0.1f;
@@ -123,7 +124,7 @@ GLfloat fan_stacks = 20;
 
 // textures
 // texture constants
-#define WALL_TEXTURE 0
+#define ENVIRONMENT 0
 #define FLOOR_TEXTURE 1
 #define DOOR_TEXTURE 2
 #define STOOL_TEXTURE 3
@@ -138,17 +139,19 @@ GLfloat fan_stacks = 20;
 #define PRESENT_ONE 12
 #define PRESENT_TWO 13
 #define PRESENT_THREE 14
-#define NUM_TEXTURES 15
+#define WALL_TEXTURE 15
+#define NUM_TEXTURES 16
 
 	// texture array
 	GLuint tex_ids[NUM_TEXTURES];
 
 	// Texture files
-	char texture_files[NUM_TEXTURES][20] = { {"wall_texture.png"}, {"wood_floor_tex.jpg"} , {"door_texture.jpg"}, 
+	char texture_files[NUM_TEXTURES][20] = { {"blank.bmp"}, {"wood_floor_tex.jpg"} , {"door_texture.jpg"},
 											{"stool_texture.jpg"}, {"stool_leg.jpeg"}, {"fire_tex.jpg"}, 
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
-											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"} };
+											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
+												{"wall_texture.png"} };
 
 
 	// texture coordinates
@@ -159,3 +162,11 @@ GLfloat cube_tex[][2] = { {0,1}, {0, 0}, {1, 0}, {1,1},
 							{1,0}, {1, 1}, {0, 0}, {0,0},
 							{1,0}, {1, 1}, {0, 1}, {0,0},
 							{0,0}, {1, 0}, {1, 1}, {0,1} };
+
+
+
+//light1 (green spotlight) Parameters 
+GLfloat light1_pos[] = {-6, wall_height/2.0f, 6.0f };
+GLfloat light1_dir[] = { 0,-1,0};
+GLfloat light1_cutoff = 40;
+GLfloat light1_exp = 3;

@@ -9,6 +9,20 @@ struct LightType {
 LightType white_light = {{0.0f,0.0f,0.0f,1.0f},
                          {1.0f,1.0f,1.0f,1.0f},
                          {1.0f,1.0f,1.0f,1.0f}};
+
+LightType lime_light = { {0.0215,0.1745,0.0215, 1.0},
+					{0.1, 0.7, 0.1, 1.0},
+					{1.0, 1.0, 1.0, 1.0} };
+
+LightType red_light = { {0.8, 0.02, 0.02, 1.0},
+					{ 0.9, 0.0, 0.0, 1.0 },
+					{ 1.0, 0.1, 0.1, 1.0} };
+
+LightType blue_light = { {0.0,0.0 ,1.0, 1.0},
+						{ 0.0,0.0,1.0,1.0 },
+						{ 0.0,0.0,1.0, 1.0} };
+
+
 					   
 // Utility function to set directional light properties
 void set_DirectionalLight(GLenum source, LightType *light, GLfloat direction[4])
