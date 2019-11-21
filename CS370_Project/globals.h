@@ -124,7 +124,7 @@ GLfloat fan_stacks = 20;
 
 // textures
 // texture constants
-#define WALL_TEXTURE 0
+#define ENVIRONMENT 0
 #define FLOOR_TEXTURE 1
 #define DOOR_TEXTURE 2
 #define STOOL_TEXTURE 3
@@ -139,19 +139,19 @@ GLfloat fan_stacks = 20;
 #define PRESENT_ONE 12
 #define PRESENT_TWO 13
 #define PRESENT_THREE 14
-#define ENVIRONMENT 15
+#define WALL_TEXTURE 15
 #define NUM_TEXTURES 16
 
 	// texture array
 	GLuint tex_ids[NUM_TEXTURES];
 
 	// Texture files
-	char texture_files[NUM_TEXTURES][20] = { {"wall_texture.png"}, {"wood_floor_tex.jpg"} , {"door_texture.jpg"}, 
+	char texture_files[NUM_TEXTURES][20] = { {"blank.bmp"}, {"wood_floor_tex.jpg"} , {"door_texture.jpg"},
 											{"stool_texture.jpg"}, {"stool_leg.jpeg"}, {"fire_tex.jpg"}, 
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
-												{"blank.bmp"} };
+												{"wall_texture.png"} };
 
 
 	// texture coordinates

@@ -54,8 +54,8 @@ C:\CS370\assignments\house\CS370_Project\house.cpp(717,80): warning C4244:  'arg
 C:\CS370\assignments\house\CS370_Project\house.cpp(717,67): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
 C:\CS370\assignments\house\CS370_Project\house.cpp(729,66): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
 C:\CS370\assignments\house\CS370_Project\house.cpp(749,67): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(898,29): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(900,29): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(902,30): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(898,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(900,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(902,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
 C:\CS370\assignments\house\CS370_Project\house.cpp(904,29): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
   CS370_Project.vcxproj -> C:\CS370\assignments\house\Debug\CS370_Project.exe

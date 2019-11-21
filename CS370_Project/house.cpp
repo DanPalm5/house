@@ -802,7 +802,7 @@ bool load_textures()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 
-			if (tex_ids[i] == FIREPLACE) {
+			if (i == FIREPLACE) {
 				// TODO: Set wrapping modes
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -874,15 +874,15 @@ void create_Mirror()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-2, 2, -3, 3, 1, 30);
-	// TODO: Set modelview matrix positioning "mirror" camera
+	// Set modelview matrix positioning "mirror" camera
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(-wall_length*2, -wall_height/2, -wall_length, 0, -wall_height/2, 0, 0, 1, 0);
-	// TODO: Render scene from mirror
+	// Render scene from mirror
 	render_Scene();
 	glFinish();
 
-	// TODO: Copy scene to texture
+	// Copy scene to texture
 	glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
 	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 512, 512, 0);
 }
@@ -891,17 +891,17 @@ void render_Mirror()
 	glPushMatrix();
 	glUseProgram(textureShaderProg);
 	glUniform1i(texSampler, 0);
-	// TODO: Draw mirror surface
+	// Draw mirror surface
 	glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
 	glBegin(GL_POLYGON);
-	glTexCoord2d(0, 0);
-	glVertex3f((-wall_length*2 + 1.25), -4, -8);
-	glTexCoord2d(0, 1);
-	glVertex3f((-wall_length*2 + 1.25), 3, -8);
-	glTexCoord2d(1, 1);
-	glVertex3f((-wall_length*2  + 1.25), 3, -15);
-	glTexCoord2d(1, 0);
-	glVertex3f((-wall_length*2 + 1.25), -4, -15);
+	glTexCoord2f(1, 0);
+	glVertex3f((-wall_length * 2 + 5.25), -4, -15);
+	glTexCoord2f(1, 1);
+	glVertex3f((-wall_length * 2 + 5.25), 3, -15);
+	glTexCoord2f(0, 1);
+	glVertex3f((-wall_length * 2 + 5.25), 3, -8);
+	glTexCoord2f(0, 0);
+	glVertex3f((-wall_length*2 + 5.25), -4, -8);  // should be -wall_length*2 + 1.25 ,but is currently 5.25 to test to make sure image is not on other side
 	glEnd();
 	
 	// Draw mirror frame
