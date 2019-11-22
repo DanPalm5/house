@@ -29,6 +29,8 @@ int projectionType = ORTHOGRAPHIC;
 #define TABLE_TOP 15
 #define CEILING 16
 #define MIRROR 17
+#define TREE_TOP 18
+#define STAR 19
 
 // Color identifiers
 #define RED 0
@@ -94,7 +96,7 @@ GLfloat floor_scaleZ = wall_length/5;
 // Tree variables
 GLfloat tree_offset = wall_length*1.5;
 GLfloat tree_base = 3.75;
-GLfloat tree_height = 15;
+GLfloat tree_height = 13;
 GLfloat tree_slices = 500;
 GLfloat tree_stacks = 500;
 GLfloat tree_cover_inner_rad = 0.1f;
@@ -111,6 +113,13 @@ GLfloat fan_radius = 2;
 GLfloat fan_slices = 20;
 GLfloat fan_stacks = 20;
 
+// Animation variables
+GLint time = 0;
+GLint lasttime = 0;
+GLint fps = 30;
+GLfloat tree_theta = 0.0f;
+GLfloat tree_dtheta = 2.0f;
+GLint spin_tree = 0;
 // chair variables
 #define CHAIR_LEG_SCALEX 0.20f
 #define CHAIR_LEG_SCALEY 1.0f
