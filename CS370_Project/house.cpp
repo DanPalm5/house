@@ -16,6 +16,7 @@
 #include "lighting.h"
 #include "materials.h"
 #include "globals.h"
+#include "vectorops.h"
 
 
 // Global screen dimensions
@@ -61,6 +62,9 @@ void load_image();
 bool load_textures();
 void create_Mirror();
 void render_Mirror();
+void colorcube();
+void div_quad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], int n);
+void rquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[]);
 
 
 int main(int argc, char *argv[])
@@ -95,9 +99,6 @@ int main(int argc, char *argv[])
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
-	// Set initial ambient light
-	GLfloat background[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	set_AmbientLight(background);
 
 	// Load shader programs
 	defaultShaderProg = load_shaders(defaultVertexFile,defaultFragmentFile);
@@ -138,8 +139,13 @@ int main(int argc, char *argv[])
 // Display callback
 void display()
 {
+
+	// Set initial ambient light
+	GLfloat background[] = { 0.2f, 0.2f, 1.0f, 1.0f };
+	set_AmbientLight(background);
+
 	// pass 1
-	create_Mirror();
+	//create_Mirror();
 
 	// Reset background
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -182,7 +188,7 @@ void display()
 	render_Scene();
 
 	// render mirror
-	render_Mirror();
+	//render_Mirror();
 
 	// Flush buffer
 	glFlush();
@@ -194,8 +200,10 @@ void display()
 // Scene render function
 void render_Scene()
 {
+
 	//glUseProgram(lightShaderProg)
-	//set_SpotLight(GL_LIGHT0, &red_light, light1_pos, light1_dir, light1_cutoff, light1_exp);
+	set_SpotLight(GL_LIGHT1, &white_light , light1_pos, light1_dir, light1_cutoff, light1_exp);
+	
 
 	// draw room
 	glPushMatrix();
@@ -203,8 +211,8 @@ void render_Scene()
 	glPopMatrix();
 	
 	// table and chairs
-	setColor(RED);
 	glPushMatrix();
+	setColor(RED);
 	glTranslatef(-7.0f, -wall_height+1, 7);
 	glCallList(TABLE_CHAIRS);
 	glCallList(TABLE_TOP);
@@ -216,24 +224,25 @@ void render_Scene()
 	glPopMatrix();
 
 	// Christmas tree
-	glPushMatrix();
-	glCallList(TREE);
-	glPopMatrix();
+		// base
+		glPushMatrix();
+		glCallList(TREE);
+		glPopMatrix();
 
-	// top
-	glPushMatrix();
-	glTranslatef(tree_offset, (-wall_height / 2) - 1, tree_offset * 0.9);
-	glRotatef(-90, 1, 0, 0);
-	glRotatef(tree_theta, 0, 0, 1);
-	glCallList(TREE_TOP);
-	glPopMatrix();
+			// top
+		glPushMatrix();
+		glTranslatef(tree_offset, (-wall_height / 2) - 1, tree_offset * 0.9);
+		glRotatef(-90, 1, 0, 0);
+		glRotatef(tree_theta, 0, 0, 1);
+		glCallList(TREE_TOP);
+		glPopMatrix();
 
-	//star on top
-	glPushMatrix();
-	glTranslatef(tree_offset, 5.5, tree_offset * 0.9);
-	glRotatef(tree_theta, 0, 1, 0);
-	glCallList(STAR);
-	glPopMatrix();
+			//star on top
+		glPushMatrix();
+		glTranslatef(tree_offset, 5.5, tree_offset * 0.9);
+		glRotatef(tree_theta, 0, 1, 0);
+		glCallList(STAR);
+		glPopMatrix();
 
 	// door
 	glPushMatrix();
@@ -253,6 +262,47 @@ void render_Scene()
 	// window
 	glPushMatrix();
 	glCallList(WINDOW);
+	glPopMatrix();
+
+	// desk
+	glPushMatrix();
+	glUseProgram(lightShaderProg);
+	glUniform1i(numLights_param, numLights);
+	set_material(GL_FRONT_AND_BACK, &brass);
+	glCallList(DESK);
+	glPopMatrix();
+
+	// desk lamp
+		// rod
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET-1, wall_height / 4.0f, DESK_OFFSET-0.5f);
+	glRotatef(-90, 1, 0, 0);
+	gluCylinder(tree_top, 0.1, 0.1, wall_height, 50, 50);
+	glPopMatrix();
+		// cone bottom
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET - 1, wall_height / 5.0f, DESK_OFFSET - 0.5f);
+	glRotatef(-90, 1, 0, 0);
+	gluCylinder(tree_top, 0.5, 0.1, 1, 50, 50);
+	glPopMatrix();
+
+	// legs
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET-2.5 , -wall_height + 1.5, DESK_OFFSET-3.5);
+	glScalef(1, 1.75f, 1);
+	glCallList(CHAIR_LEG);
+	glTranslatef(0, 0, 6.5f);
+	glCallList(CHAIR_LEG);
+	glTranslatef(3.0f, 0, 0);
+	glCallList(CHAIR_LEG);
+	glTranslatef(0, 0, -6.5f);
+	glCallList(CHAIR_LEG);
+	glPopMatrix();
+
+	// desk chair
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET + 3, -wall_height+1, DESK_OFFSET - 0.5);
+	glCallList(FULL_CHAIR);
 	glPopMatrix();
 	
 }
@@ -386,9 +436,14 @@ void keyfunc(unsigned char key, int x, int y)
 			at_fp[Y] = (eye_fp[Y] + sin(camera_y_theta));
 		
 		}
-
+		// animation of tree
 		if (key == 'T' || key == 't') {
 			spin_tree = !spin_tree;
+		}
+
+		// light toggle
+		if (key == 'L' || key == 'l') {
+			light1_dir[Y] *= -1;
 		}
 	}
 
@@ -494,8 +549,6 @@ bool load_textures()
 	return true;
 }
 
-
-
 // Routine to draw textured cube
 void texturecube()
 {
@@ -537,6 +590,8 @@ void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[
 
 void create_Mirror() 
 {
+	glUniform1i(texSampler, 0);
+	glUseProgram(textureShaderProg);
 	// PASS 1 - Render reflected scene
 	// Reset background
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -562,16 +617,17 @@ void create_Mirror()
 	glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
 	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 512, 512, 0);
 }
+
 void render_Mirror()
 {
-
+	
 	glPushMatrix();
-		glUseProgram(textureShaderProg);
-		glUniform1i(texSampler, 0);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
 		// Draw mirror surface
 		glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
 		glBegin(GL_POLYGON);
-		glTexCoord2f(0, 0);//1, 0);
+			glTexCoord2f(0, 0);//1, 0);
 			glVertex3f((-wall_length * 2 + 5.25), -4, -15);
 			glTexCoord2f(0, 1);//1, 1);
 			glVertex3f((-wall_length * 2 + 5.25), 3, -15);
@@ -592,6 +648,79 @@ void render_Mirror()
 
 	glPopMatrix();
 }
+
+void colorcube()
+{
+	// Top face
+	div_quad(cube[4], cube[7], cube[6], cube[5], div_level);
+	
+	// Bottom face
+	rquad(cube[0], cube[1], cube[2], cube[3]);
+
+	// Left face
+	rquad(cube[0], cube[3], cube[7], cube[4]);
+
+	// Right face
+	rquad(cube[1], cube[5], cube[6], cube[2]);
+
+	// Front face
+	rquad(cube[2], cube[6], cube[7], cube[3]);
+
+	// Back face
+	rquad(cube[0], cube[4], cube[5], cube[1]);
+}
+
+// Routine to perform recursive subdivision
+void div_quad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], int n)
+{
+	GLfloat v1_prime[3], v2_prime[3], v3_prime[3], v4_prime[3], v5_prime[3];
+
+	// Recurse until n = 0
+	if (n > 0)
+	{
+		// Compute midpoints
+		for (int i = 0; i < 3; i++)
+		{
+			v1_prime[i] = (v4[i] + v1[i]) / 2.0f;
+			v2_prime[i] = (v1[i] + v2[i]) / 2.0f;
+			v3_prime[i] = (v2[i] + v3[i]) / 2.0f;
+			v4_prime[i] = (v3[i] + v4[i]) / 2.0f;
+			v5_prime[i] = (v1[i] + v2[i] + v3[i] + v4[i]) / 4.0f;
+		}
+
+		// Subdivide polygon
+		div_quad(v1, v2_prime, v5_prime, v1_prime, n - 1);
+		div_quad(v2_prime, v2, v3_prime, v5_prime, n - 1);
+		div_quad(v1_prime, v5_prime, v4_prime, v4, n - 1);
+		div_quad(v5_prime, v3_prime, v3, v4_prime, n - 1);
+	}
+	else
+	{
+		// Otherwise render quad
+		rquad(v1, v2, v3, v4);
+	}
+}
+
+// Routine to draw quadrilateral face
+void rquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[])
+{
+	GLfloat normal[3];
+	// Compute normal via cross product
+	cross(v1, v2, v4, normal);
+	normalize(normal);
+
+	// Set normal
+	glNormal3fv(normal);
+
+	// Draw face 
+	glBegin(GL_POLYGON);
+	glVertex3fv(v1);
+	glVertex3fv(v2);
+	glVertex3fv(v3);
+	glVertex3fv(v4);
+	glEnd();
+}
+
 
 void create_lists()
 {
@@ -645,7 +774,7 @@ void create_lists()
 	// room list
 	glNewList(ROOM, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(defaultShaderProg);
+	
 	// 4 walls
 	glPushMatrix();
 	setColor(BLUE);
@@ -699,7 +828,6 @@ void create_lists()
 	// table and chairs
 	glNewList(TABLE_CHAIRS, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(defaultShaderProg);
 	glPushMatrix();
 	// table
 	glTranslatef(CHAIR_TO_CHAIR_DIST / 4, 0, -CHAIR_TO_CHAIR_DIST / 4);
@@ -807,7 +935,6 @@ void create_lists()
 	glNewList(WINDOW, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glUseProgram(defaultShaderProg);
-
 	glPushMatrix();
 	setColor(GLASS);
 	glTranslatef(0, -wall_height / 3, (wall_length * 2));
@@ -849,8 +976,8 @@ void create_lists()
 	// complete chair list
 	glNewList(FULL_CHAIR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-
 	glPushMatrix();
+	setColor(BROWN);
 	glCallList(CHAIR_LEG);
 	glTranslatef(-CHAIR_WIDTH, 0, 0);
 	glCallList(CHAIR_LEG);
@@ -861,6 +988,7 @@ void create_lists()
 	glPopMatrix();
 
 	glPushMatrix();
+	setColor(BROWN);
 	glBindTexture(GL_TEXTURE_2D, tex_ids[STOOL_TEXTURE]);
 	glTranslatef(-CHAIR_WIDTH / 2, CHAIR_LEG_TO_SEAT_HEIGHT, CHAIR_WIDTH / 2);
 	glCallList(CHAIR_SEAT);
@@ -931,8 +1059,38 @@ void create_lists()
 	glPopMatrix();
 
 	glPopAttrib();
+	glEndList(); //end tree list (excludes top)
+
+
+	// tree top list
+	glNewList(TREE_TOP, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+		// top
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_TOP_TEXTURE]);
+		glScalef(0.75, 0.75, 0.75);
+		gluCylinder(tree_top, tree_base, 0.1, tree_height, tree_slices, tree_stacks);
+		glPopMatrix();
+		glPopAttrib();
+		glEndList();
+
+
+		//star list
+		glNewList(STAR, GL_COMPILE);
+		glPushAttrib(GL_CURRENT_BIT);
+		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glScalef(0.5, 0.5, 0.5);
+		glutSolidIcosahedron();
+		glPopMatrix();
+	glPopAttrib();
 	glEndList();
 
+
+	// mirror 
 	glNewList(MIRROR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glUseProgram(defaultShaderProg);
@@ -940,35 +1098,18 @@ void create_lists()
 
 	glPopMatrix();
 	glPopAttrib();
-	glEndList();// end tree list (excludes top)
-
-	// tree top list
-	glNewList(TREE_TOP, GL_COMPILE);
-	glPushAttrib(GL_CURRENT_BIT);
-	// top
-	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_TOP_TEXTURE]);
-	glScalef(0.75, 0.75, 0.75);
-	gluCylinder(tree_top, tree_base, 0.1, tree_height, tree_slices, tree_stacks);
-	glPopMatrix();
-	glPopAttrib();
 	glEndList();
 
 
-	//star list
-	glNewList(STAR, GL_COMPILE);
+	// desk list
+	glNewList(DESK, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glUseProgram(defaultShaderProg);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glScalef(0.5, 0.5, 0.5);
-	glutSolidIcosahedron();
+	glTranslatef(DESK_OFFSET-1, -wall_height/1.75f, DESK_OFFSET);
+	glScalef(2.0f, 0.2f, 4.0f);
+	colorcube();
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
-
-
 
 }

@@ -31,6 +31,7 @@ int projectionType = ORTHOGRAPHIC;
 #define MIRROR 17
 #define TREE_TOP 18
 #define STAR 19
+#define DESK 20
 
 // Color identifiers
 #define RED 0
@@ -128,8 +129,13 @@ GLint spin_tree = 0;
 #define CHAIR_LEG_TO_SEAT_HEIGHT 0.75f
 #define CHAIR_SEAT_SCALE 1
 #define CHAIR_SEAT_SCALE_Y 0.2
-
 #define CHAIR_TO_CHAIR_DIST 7.0f
+
+
+// desk variables
+#define DESK_OFFSET -wall_length*1.5f
+GLint div_level = 8;
+
 
 // textures
 // texture constants
@@ -174,8 +180,8 @@ GLfloat cube_tex[][2] = { {0,1}, {0, 0}, {1, 0}, {1,1},
 
 
 
-//light1 (green spotlight) Parameters 
-GLfloat light1_pos[] = {-6, wall_height/2.0f, 6.0f };
+//light1 (white spotlight) Parameters 
+GLfloat light1_pos[] = { DESK_OFFSET - 1, wall_height / 5.0f, DESK_OFFSET - 0.5f };
 GLfloat light1_dir[] = { 0,-1,0};
-GLfloat light1_cutoff = 40;
-GLfloat light1_exp = 3;
+GLfloat light1_cutoff = 15;
+GLfloat light1_exp = 1;
