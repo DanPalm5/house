@@ -258,52 +258,59 @@ void render_Scene()
 	glCallList(FIREPLACE);
 	glPopMatrix();
 
-	// window
-	glPushMatrix();
-	glCallList(WINDOW);
-	glPopMatrix();
+	// window 
+		glPushMatrix();
+		glCallList(WINDOW);
+		glPopMatrix();
 
-	// window pane
-		// top
-	glPushMatrix();
-	glTranslatef(0, 0.25f, (wall_length * 2) - 0.25f);
-	glScalef(1.2, 1, 1);
-	glCallList(WINDOW_PANE);
-	glPopMatrix();
-		// bottom
-	glPushMatrix();
-	glTranslatef(0, -4.0f, (wall_length * 2) - 0.25f);
-	glScalef(1.2, 1, 1);
-	glCallList(WINDOW_PANE);
-	glPopMatrix();
-		// right side
-	glPushMatrix();
-	glTranslatef(-2.15f, -2.0f, (wall_length * 2) - 0.25f);
-	glRotatef(90, 0, 0, 1);
-	glScalef(1.05f, 1.05f, 1);
-	glCallList(WINDOW_PANE);
-	glPopMatrix();
-		// left side 
-	glPushMatrix();
-	glTranslatef(2.15f, -2.0f, (wall_length * 2) - 0.25f);
-	glRotatef(90, 0, 0, 1);
-	glScalef(1.05f, 1.05f, 1);
-	glCallList(WINDOW_PANE);
-	glPopMatrix();
-		// middle column
-	glPushMatrix();
-	glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
-	glRotatef(90, 0, 0, 1);
-	glScalef(1.05f, 1.05f, 1);
-	glCallList(WINDOW_PANE);
-	glPopMatrix();
-		// middle row
-	// middle column
-	glPushMatrix();
-	glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
-	glScalef(1.05f, 1.05f, 1);
-	glCallList(WINDOW_PANE);
-	glPopMatrix();
+		// window pane
+			// top
+		glPushMatrix();
+		glTranslatef(0, 0.25f, (wall_length * 2) - 0.25f);
+		glScalef(1.2, 1, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+			// bottom
+		glPushMatrix();
+		glTranslatef(0, -4.0f, (wall_length * 2) - 0.25f);
+		glScalef(1.2, 1, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+			// right side
+		glPushMatrix();
+		glTranslatef(-2.15f, -2.0f, (wall_length * 2) - 0.25f);
+		glRotatef(90, 0, 0, 1);
+		glScalef(1.05f, 1.05f, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+			// left side 
+		glPushMatrix();
+		glTranslatef(2.15f, -2.0f, (wall_length * 2) - 0.25f);
+		glRotatef(90, 0, 0, 1);
+		glScalef(1.05f, 1.05f, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+			// middle column
+		glPushMatrix();
+		glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
+		glRotatef(90, 0, 0, 1);
+		glScalef(1.05f, 1.05f, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+			// middle row
+		glPushMatrix();
+		glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
+		glScalef(1.05f, 1.05f, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+
+			// window blinds
+		glPushMatrix();
+		glTranslatef(0, (-wall_height / 4.0f)+blinds_shift, (wall_length * 2) - 0.50f);
+		glRotatef(180, 0, 1, 0);
+		glScalef(2.25f, 2.25f, 1.1f);
+		glCallList(WINDOW_BLINDS);
+		glPopMatrix();
 
 	// desk
 	glPushMatrix();
@@ -345,6 +352,7 @@ void render_Scene()
 	glTranslatef(DESK_OFFSET + 3, -wall_height+1, DESK_OFFSET - 0.5);
 	glCallList(FULL_CHAIR);
 	glPopMatrix();
+
 	
 }
 
@@ -486,6 +494,11 @@ void keyfunc(unsigned char key, int x, int y)
 		if (key == 'L' || key == 'l') {
 			light1_dir[Y] *= -1;
 		}
+
+		// window blinds toggle
+		if (key == 'O' || key == 'o') {
+			animate_blinds = !animate_blinds;
+		}
 	}
 
 		// <esc> quits
@@ -524,6 +537,22 @@ void idlefunc()
 			if (tree_theta >= 360.0f) {
 				tree_theta /= 360.0f;
 			}
+		}
+
+		if (animate_blinds) {
+			blinds_shift += blinds_step;
+			if (blinds_shift >= BLINDS_MAX_SHIFT) {
+				blinds_shift = BLINDS_MAX_SHIFT;
+			}
+			
+		}
+
+		if (!animate_blinds) {
+			blinds_shift -= blinds_step;
+			if (blinds_shift <= 0) {
+				blinds_shift = 0;
+			}
+		
 		}
 		
 	}
@@ -1005,9 +1034,8 @@ void create_lists()
 	glUseProgram(textureShaderProg);
 	glUniform1i(texSampler, 0);
 	glPushMatrix();
-	//glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_BLINDS_TEXTURE]);
-	// FINISH BLINDS
-	glTranslatef(0, -wall_height / 4.0f, (wall_length * 2) - 0.50f);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_BLINDS_TEXTURE]);
+	texturecube();
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();

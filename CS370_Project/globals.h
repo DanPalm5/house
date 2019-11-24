@@ -125,6 +125,10 @@ GLfloat tree_theta = 0.0f;
 GLfloat tree_dtheta = 2.0f;
 GLint spin_tree = 0;
 GLint animate_blinds = 0;
+GLfloat blinds_shift = 0.0f;
+GLfloat blinds_step = 0.10f;
+#define BLINDS_MAX_SHIFT 5.0f
+
 // chair variables
 #define CHAIR_LEG_SCALEX 0.20f
 #define CHAIR_LEG_SCALEY 1.0f
@@ -160,9 +164,9 @@ GLint div_level = 8;
 #define PRESENT_THREE 14
 #define WALL_TEXTURE 15
 #define WINDOW_PANE_TEX 16
-//#define WINDOW_BLINDS_TEXTURE 17
+#define WINDOW_BLINDS_TEXTURE 17
 
-#define NUM_TEXTURES 17
+#define NUM_TEXTURES 18
 
 
 	// texture array
@@ -174,7 +178,7 @@ GLint div_level = 8;
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
-												{"wall_texture.png"}, {"window_tex.jpg"} };
+												{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"} };
 
 
 	// texture coordinates
