@@ -126,8 +126,9 @@ GLfloat tree_dtheta = 2.0f;
 GLint spin_tree = 0;
 GLint animate_blinds = 0;
 GLfloat blinds_shift = 0.0f;
-GLfloat blinds_step = 0.10f;
-#define BLINDS_MAX_SHIFT 5.0f
+GLfloat blinds_step = 0.05f;
+GLfloat scale_y_theta = 1.0f;
+#define BLINDS_MAX_SHIFT 1.25f
 
 // chair variables
 #define CHAIR_LEG_SCALEX 0.20f

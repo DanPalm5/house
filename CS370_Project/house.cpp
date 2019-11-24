@@ -306,9 +306,9 @@ void render_Scene()
 
 			// window blinds
 		glPushMatrix();
-		glTranslatef(0, (-wall_height / 4.0f)+blinds_shift, (wall_length * 2) - 0.50f);
+		glTranslatef(0, (-wall_height / 4.0f)+(blinds_shift+(1.0f-scale_y_theta)), (wall_length * 2) - 0.50f);
 		glRotatef(180, 0, 1, 0);
-		glScalef(2.25f, 2.25f, 1.1f);
+		glScalef(2.25f, 2.25f *scale_y_theta, 1.1f);
 		glCallList(WINDOW_BLINDS);
 		glPopMatrix();
 
@@ -541,16 +541,24 @@ void idlefunc()
 
 		if (animate_blinds) {
 			blinds_shift += blinds_step;
+			scale_y_theta -= 0.05f;
+			if (scale_y_theta <= 0.05f) {
+				scale_y_theta = 0.05f;
+			}
 			if (blinds_shift >= BLINDS_MAX_SHIFT) {
 				blinds_shift = BLINDS_MAX_SHIFT;
 			}
+
 			
 		}
-
 		if (!animate_blinds) {
 			blinds_shift -= blinds_step;
 			if (blinds_shift <= 0) {
 				blinds_shift = 0;
+			}
+			scale_y_theta += 0.05f;
+			if (scale_y_theta >= 1.0f) {
+				scale_y_theta = 1.0f;
 			}
 		
 		}
