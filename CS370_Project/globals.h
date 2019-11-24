@@ -32,6 +32,8 @@ int projectionType = ORTHOGRAPHIC;
 #define TREE_TOP 18
 #define STAR 19
 #define DESK 20
+#define WINDOW_PANE 21
+#define WINDOW_BLINDS 22
 
 // Color identifiers
 #define RED 0
@@ -46,10 +48,11 @@ int projectionType = ORTHOGRAPHIC;
 #define BLACK 9
 #define BROWN 10
 #define GLASS 11
+#define WHITE_SAND 12
 
 // Vertex colors
 GLfloat current_color[][3] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 0.5f, 0.5f}, { 1.0f, 1.0f, 0.0f } ,{0.69f, 0.13f, 0.13f}, {1.0f,0.35f,0.39f},{0.0f, 1.0f, 1.0f},
-{0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f}, {0.658f, 0.8f, 0.843f} };
+{0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f}, {0.658f, 0.8f, 0.843f}, {0.878f, 0.851f, 0.7801f} };
 GLint color = RED;
 
 // cube vertices
@@ -121,6 +124,7 @@ GLint fps = 30;
 GLfloat tree_theta = 0.0f;
 GLfloat tree_dtheta = 2.0f;
 GLint spin_tree = 0;
+GLint animate_blinds = 0;
 // chair variables
 #define CHAIR_LEG_SCALEX 0.20f
 #define CHAIR_LEG_SCALEY 1.0f
@@ -155,7 +159,11 @@ GLint div_level = 8;
 #define PRESENT_TWO 13
 #define PRESENT_THREE 14
 #define WALL_TEXTURE 15
-#define NUM_TEXTURES 16
+#define WINDOW_PANE_TEX 16
+//#define WINDOW_BLINDS_TEXTURE 17
+
+#define NUM_TEXTURES 17
+
 
 	// texture array
 	GLuint tex_ids[NUM_TEXTURES];
@@ -166,7 +174,7 @@ GLint div_level = 8;
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
-												{"wall_texture.png"} };
+												{"wall_texture.png"}, {"window_tex.jpg"} };
 
 
 	// texture coordinates

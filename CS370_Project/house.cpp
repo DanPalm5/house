@@ -201,7 +201,6 @@ void display()
 void render_Scene()
 {
 
-	//glUseProgram(lightShaderProg)
 	set_SpotLight(GL_LIGHT1, &white_light , light1_pos, light1_dir, light1_cutoff, light1_exp);
 	
 
@@ -216,7 +215,7 @@ void render_Scene()
 	glTranslatef(-7.0f, -wall_height+1, 7);
 	glCallList(TABLE_CHAIRS);
 	glCallList(TABLE_TOP);
-	glPopMatrix();
+	glPopMatrix();  
 
 	// mirror
 	glPushMatrix();
@@ -224,7 +223,7 @@ void render_Scene()
 	glPopMatrix();
 
 	// Christmas tree
-		// base
+			// base
 		glPushMatrix();
 		glCallList(TREE);
 		glPopMatrix();
@@ -262,6 +261,48 @@ void render_Scene()
 	// window
 	glPushMatrix();
 	glCallList(WINDOW);
+	glPopMatrix();
+
+	// window pane
+		// top
+	glPushMatrix();
+	glTranslatef(0, 0.25f, (wall_length * 2) - 0.25f);
+	glScalef(1.2, 1, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+		// bottom
+	glPushMatrix();
+	glTranslatef(0, -4.0f, (wall_length * 2) - 0.25f);
+	glScalef(1.2, 1, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+		// right side
+	glPushMatrix();
+	glTranslatef(-2.15f, -2.0f, (wall_length * 2) - 0.25f);
+	glRotatef(90, 0, 0, 1);
+	glScalef(1.05f, 1.05f, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+		// left side 
+	glPushMatrix();
+	glTranslatef(2.15f, -2.0f, (wall_length * 2) - 0.25f);
+	glRotatef(90, 0, 0, 1);
+	glScalef(1.05f, 1.05f, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+		// middle column
+	glPushMatrix();
+	glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
+	glRotatef(90, 0, 0, 1);
+	glScalef(1.05f, 1.05f, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+		// middle row
+	// middle column
+	glPushMatrix();
+	glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
+	glScalef(1.05f, 1.05f, 1);
+	glCallList(WINDOW_PANE);
 	glPopMatrix();
 
 	// desk
@@ -924,7 +965,7 @@ void create_lists()
 	glUniform1i(texSampler, 0);
 	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, tex_ids[DOOR_TEXTURE]);
-	glTranslatef(0, (-wall_height / 2) + 1.25, (-wall_length * 2) + 0.5);
+	glTranslatef(0, (-wall_height / 2) + 2.25, (-wall_length * 2) + 0.5);
 	glScalef(5, 6, 0.7);
 	texturecube();
 	glPopMatrix();
@@ -934,12 +975,39 @@ void create_lists()
 	// window list
 	glNewList(WINDOW, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(defaultShaderProg);
+		//window pane texture
 	glPushMatrix();
-	setColor(GLASS);
-	glTranslatef(0, -wall_height / 3, (wall_length * 2));
-	glScalef(3, 3, 1.1);
+	glUseProgram(textureShaderProg);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_PANE_TEX]);
+	glTranslatef(0, -wall_height / 4.0f, (wall_length * 2));
+	glRotatef(180, 0, 1, 0);
+	glScalef(2.0f, 2.0f, 1.1f);
 	glCallList(CUBE);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+		
+	// pane instance object
+	glNewList(WINDOW_PANE, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glUseProgram(defaultShaderProg);
+	setColor(WHITE_SAND);
+	glScalef(2.0f, 0.15f, 1.1f);
+	glutSolidCube(2.0);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
+	// window blinds
+	glNewList(WINDOW_BLINDS, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glPushMatrix();
+	//glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_BLINDS_TEXTURE]);
+	// FINISH BLINDS
+	glTranslatef(0, -wall_height / 4.0f, (wall_length * 2) - 0.50f);
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
