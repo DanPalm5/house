@@ -138,17 +138,16 @@ int main(int argc, char *argv[])
 
 // Display callback
 void display()
-{
+{	// pass 1
+	create_Mirror();
+
+	// Reset background
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Set initial ambient light
 	GLfloat background[] = { 0.2f, 0.2f, 1.0f, 1.0f };
 	set_AmbientLight(background);
 
-	// pass 1
-	//create_Mirror();
-
-	// Reset background
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Set projection matrix
 	glMatrixMode(GL_PROJECTION);
@@ -188,7 +187,7 @@ void display()
 	render_Scene();
 
 	// render mirror
-	//render_Mirror();
+	render_Mirror();
 
 	// Flush buffer
 	glFlush();
@@ -594,30 +593,42 @@ void load_image()
 
 bool load_textures() 
 {
-	for (int i = 0; i < NUM_TEXTURES; i++)
-	{
-		// TODO: Load images
-		if (i == ENVIRONMENT) {
-			tex_ids[ENVIRONMENT] = SOIL_load_OGL_texture(texture_files[ENVIRONMENT], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-			// Set scaling filters (no mipmap)
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			// Set wrapping modes (clamped)
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		}
-		else {
-			tex_ids[i] = SOIL_load_OGL_texture(texture_files[i], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
+	// Load environment map texture (NO MIPMAPPING)
+	tex_ids[ENVIRONMENT] = SOIL_load_OGL_texture(texture_files[0], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 
-		}
+	// TODO: Set environment map properties if successfully loaded
+	if (tex_ids[ENVIRONMENT] != 0)
+	{
+		// Set scaling filters (no mipmap)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		// Set wrapping modes (clamped)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	}
+	// Otherwise texture failed to load
+	else
+	{
+		return false;
+	}
+
+	// Load object textures normally
+	for (int i = 1; i < NUM_TEXTURES; i++)
+	{
+		// Load images
+		tex_ids[i] = SOIL_load_OGL_texture(texture_files[i], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
+
+
 		// Set texture properties if successfully loaded
 		if (tex_ids[i] != 0)
 		{
-			// TODO: Set scaling filters
+			// Set scaling filters
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 
-			// TODO: Set wrapping modes
+			// Set wrapping modes
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		}
@@ -671,8 +682,7 @@ void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[
 
 void create_Mirror() 
 {
-	glUniform1i(texSampler, 0);
-	glUseProgram(textureShaderProg);
+	
 	// PASS 1 - Render reflected scene
 	// Reset background
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -680,12 +690,12 @@ void create_Mirror()
 	// TODO: Set projection matrix for flat "mirror" camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-5, 10, -3, 6, 1, 30);
+	glOrtho(0.0f, 8.0f, -7.0f, 7.0f, 0.5f, 50.0f);
 
 	// Set modelview matrix positioning "mirror" camera
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(-wall_length*2.0f, -wall_height/2.0f, -wall_length, 0, -wall_height/2.0f, 0, 0, 1, 0);
+	gluLookAt(-wall_length * 2.0f + 3.25, 0.5, 12.0f, wall_length*2.0f - 3.25 , 0.5, wall_length, 0, 1, 0);
 
 	// Render scene from mirror
 	glPushMatrix();
@@ -709,25 +719,28 @@ void render_Mirror()
 		glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
 		glBegin(GL_POLYGON);
 			glTexCoord2f(0, 0);//1, 0);
-			glVertex3f((-wall_length * 2 + 5.25), -4, -15);
+			glVertex3f((-wall_length * 2 + 1.25), -4, 15);
 			glTexCoord2f(0, 1);//1, 1);
-			glVertex3f((-wall_length * 2 + 5.25), 3, -15);
+			glVertex3f((-wall_length * 2 + 1.25), 3, 15);
 			glTexCoord2f(1, 1);//0, 1);
-			glVertex3f((-wall_length * 2 + 5.25), 3, -8);
+			glVertex3f((-wall_length * 2 + 1.25), 3, 8);
 			glTexCoord2f(1, 0);//0, 0);
-			glVertex3f((-wall_length*2 + 5.25), -4, -8);  // should be -wall_length*2 + 1.25 ,but is currently 5.25 to test to make sure image is not on other side
+			glVertex3f((-wall_length*2  + 1.25), -4, 8);  // should be -wall_length*2 + 1.25 ,but is currently 5.25 to test to make sure image is not on other side
+		glEnd();
+	glPopMatrix();
+	
+	glPushMatrix();
+		//Draw mirror frame
+		glTranslatef(0, 0, -0.25);
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(-wall_length * 2 + 1.30, -4.05f, 15.2f);
+		glVertex3f(-wall_length * 2 + 1.30, 3.05f, 15.2f);
+		glVertex3f(-wall_length * 2 + 1.30, 3.05f, 8.2f);
+		glVertex3f(-wall_length * 2 + 1.30, -4.05f, 8.2f);
 		glEnd();
 
-	
-		// Draw mirror frame
-		//glBegin(GL_LINE_LOOP);
-		//glVertex3f(-7.0f, -3.0f, 2.0f);
-		//glVertex3f(-7.0f, -3.0f, -6.0f);
-		//glVertex3f(-7.0f, 5.0f, -6.0f);
-		//glVertex3f(-7.0f, 5.0f, 2.0f);
-		//glEnd();
+		glPopMatrix();
 
-	glPopMatrix();
 }
 
 void colorcube()
