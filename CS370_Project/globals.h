@@ -121,12 +121,11 @@ GLfloat fan_stacks = 20;
 GLint time = 0;
 GLint lasttime = 0;
 GLint fps = 30;
+GLfloat rpm = 20.0f;
 GLfloat tree_theta = 0.0f;
-GLfloat tree_dtheta = 2.0f;
 GLint spin_tree = 0;
 GLint animate_blinds = 0;
 GLfloat blinds_shift = 0.0f;
-GLfloat blinds_step = 0.05f;
 GLfloat scale_y_theta = 1.0f;
 #define BLINDS_MAX_SHIFT 1.25f
 

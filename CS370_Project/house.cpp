@@ -531,16 +531,17 @@ void idlefunc()
 
 	// Update if past desired interval
 	if (time - lasttime > 1000.0f / fps) {
-		
+		// spin tree
 		if (spin_tree) {
-			tree_theta += tree_dtheta;
+			tree_theta += 3.0f * rpm * (time - lasttime) / 1000.0f;
 			if (tree_theta >= 360.0f) {
 				tree_theta /= 360.0f;
 			}
 		}
 
+		// animate blinds (scrunch up)
 		if (animate_blinds) {
-			blinds_shift += blinds_step;
+			blinds_shift += 0.1f * rpm * (time - lasttime) / 1000.0f;
 			scale_y_theta -= 0.05f;
 			if (scale_y_theta <= 0.05f) {
 				scale_y_theta = 0.05f;
@@ -549,10 +550,10 @@ void idlefunc()
 				blinds_shift = BLINDS_MAX_SHIFT;
 			}
 
-			
 		}
+		// animate blinds (move them back down)
 		if (!animate_blinds) {
-			blinds_shift -= blinds_step;
+			blinds_shift -= 0.1f * rpm * (time - lasttime) / 1000.0f;
 			if (blinds_shift <= 0) {
 				blinds_shift = 0;
 			}
@@ -562,9 +563,11 @@ void idlefunc()
 			}
 		
 		}
-		
+		// Update lasttime (reset timer)
+		lasttime = time;
+
+		glutPostRedisplay();
 	}
-	glutPostRedisplay();
 }
 
 // Reshape callback
