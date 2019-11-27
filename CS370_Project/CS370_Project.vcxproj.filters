@@ -50,6 +50,12 @@
     <None Include="texturevert.vs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\..\..\Users\super\Downloads\lightTex.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\..\Users\super\Downloads\lightTex.fs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="house.cpp">

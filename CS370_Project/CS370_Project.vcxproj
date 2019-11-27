@@ -127,6 +127,8 @@
     <ClInclude Include="shaderutils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\Users\super\Downloads\lightTex.fs" />
+    <None Include="..\..\..\..\Users\super\Downloads\lightTex.vs" />
     <None Include="defaultfrag.fs" />
     <None Include="defaultvert.vs" />
     <None Include="lightfrag.fs" />

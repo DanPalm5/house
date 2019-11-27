@@ -188,4 +188,6 @@ void main()
 
 	// Compute final lighting color
 	gl_FrontColor = amb*gl_FrontMaterial.ambient + diff*gl_FrontMaterial.diffuse + spec*gl_FrontMaterial.specular;
+
+	// gl_TexCoord[0] = gl_MultiTexCoord0;
 }

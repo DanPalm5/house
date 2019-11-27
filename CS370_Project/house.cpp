@@ -1,7 +1,9 @@
 // CS370 - Fall 2019
 // Final Project
 //Daniel Palmieri T/TR 12:30-1:45
-//Room currently contains basic geometry for a fireplace, fan, table with chairs, door, mirror, christmas tree, and window.
+//Room currently contains texture mapped windows, table and chairs, door, fireplace, christmas tree with presents, snow globe, and a desk with a light on it. 
+// to spin tree use T, to open/close blinds use O.
+// to spin snowglobe, use G. 
 // to toggle projection modes, use P.
 #ifdef OSX
 	#include <GLUT/glut.h>
@@ -22,7 +24,6 @@
 // Global screen dimensions
 GLint ww, hh;
 
-
 // Shader files
 GLchar* defaultVertexFile = "defaultvert.vs";
 GLchar* defaultFragmentFile = "defaultfrag.fs";
@@ -30,14 +31,19 @@ GLchar* lightVertexFile = "lightvert.vs";
 GLchar* lightFragmentFile = "lightfrag.fs";
 GLchar* texVertexFile = "texturevert.vs";
 GLchar* texFragmentFile = "texturefrag.fs";
+GLchar* lightTexVertexFile = "lightTex.vs";
+GLchar* lightTexFragmentFile = "lightTex.fs";
 
 // Shader objects
 GLuint defaultShaderProg;
 GLuint lightShaderProg;
 GLuint textureShaderProg;
+GLuint lightTexProg;
 GLuint numLights_param;
+GLuint num_texLights_param;
 GLint numLights = 2;
 GLint texSampler;
+GLint lightTexSampler;
 
 GLenum lights[4] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3 };
 
@@ -104,8 +110,11 @@ int main(int argc, char *argv[])
 	defaultShaderProg = load_shaders(defaultVertexFile,defaultFragmentFile);
 	lightShaderProg = load_shaders(lightVertexFile, lightFragmentFile);
 	textureShaderProg = load_shaders(texVertexFile, texFragmentFile);
+	lightTexProg = load_shaders(lightTexVertexFile, lightTexFragmentFile);
 	numLights_param = glGetUniformLocation(lightShaderProg, "numLights");
 	texSampler = glGetUniformLocation(textureShaderProg, "texMap");
+	lightTexSampler = glGetUniformLocation(lightTexProg, "texMap2");
+	num_texLights_param = glGetUniformLocation(lightTexProg, "numLights2");
 	glUseProgram(defaultShaderProg);
 
 	// Load textures
@@ -200,7 +209,7 @@ void display()
 void render_Scene()
 {
 
-	set_SpotLight(GL_LIGHT1, &white_light , light1_pos, light1_dir, light1_cutoff, light1_exp);
+	set_SpotLight(GL_LIGHT1, &red_light , light1_pos, light1_dir, light1_cutoff, light1_exp);
 	
 
 	// draw room
@@ -211,7 +220,7 @@ void render_Scene()
 	// table and chairs
 	glPushMatrix();
 	setColor(RED);
-	glTranslatef(-7.0f, -wall_height+1, 7);
+	glTranslatef(TABLE_OFFSET, -wall_height+1, 7);
 	glCallList(TABLE_CHAIRS);
 	glCallList(TABLE_TOP);
 	glPopMatrix();  
@@ -262,45 +271,8 @@ void render_Scene()
 		glCallList(WINDOW);
 		glPopMatrix();
 
-		// window pane
-			// top
 		glPushMatrix();
-		glTranslatef(0, 0.25f, (wall_length * 2) - 0.25f);
-		glScalef(1.2, 1, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-			// bottom
-		glPushMatrix();
-		glTranslatef(0, -4.0f, (wall_length * 2) - 0.25f);
-		glScalef(1.2, 1, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-			// right side
-		glPushMatrix();
-		glTranslatef(-2.15f, -2.0f, (wall_length * 2) - 0.25f);
-		glRotatef(90, 0, 0, 1);
-		glScalef(1.05f, 1.05f, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-			// left side 
-		glPushMatrix();
-		glTranslatef(2.15f, -2.0f, (wall_length * 2) - 0.25f);
-		glRotatef(90, 0, 0, 1);
-		glScalef(1.05f, 1.05f, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-			// middle column
-		glPushMatrix();
-		glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
-		glRotatef(90, 0, 0, 1);
-		glScalef(1.05f, 1.05f, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-			// middle row
-		glPushMatrix();
-		glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
-		glScalef(1.05f, 1.05f, 1);
-		glCallList(WINDOW_PANE);
+		glCallList(FULL_WINDOW_PANE);
 		glPopMatrix();
 
 			// window blinds
@@ -351,6 +323,22 @@ void render_Scene()
 	glTranslatef(DESK_OFFSET + 3, -wall_height+1, DESK_OFFSET - 0.5);
 	glCallList(FULL_CHAIR);
 	glPopMatrix();
+
+
+	//snow globe base
+	glPushMatrix();
+	glCallList(SNOWGLOBE_BASE);
+	glPopMatrix();
+
+
+	// snow globe (MUST BE RENDERED LAST)
+	glPushMatrix();
+	glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 0.5f, -TABLE_OFFSET);
+	glRotatef(snowglobe_theta, 0, 1, 0);
+	glCallList(SNOWGLOBE);
+	glPopMatrix();
+
+
 
 	
 }
@@ -498,6 +486,11 @@ void keyfunc(unsigned char key, int x, int y)
 		if (key == 'O' || key == 'o') {
 			animate_blinds = !animate_blinds;
 		}
+
+		//snowglobe animations
+		if (key == 'G' || key == 'g') {
+			animate_globe = !animate_globe;
+		}
 	}
 
 		// <esc> quits
@@ -540,7 +533,7 @@ void idlefunc()
 
 		// animate blinds (scrunch up)
 		if (animate_blinds) {
-			blinds_shift += 0.1f * rpm * (time - lasttime) / 1000.0f;
+			blinds_shift += 0.075f * rpm * (time - lasttime) / 1000.0f;
 			scale_y_theta -= 0.05f;
 			if (scale_y_theta <= 0.05f) {
 				scale_y_theta = 0.05f;
@@ -552,7 +545,7 @@ void idlefunc()
 		}
 		// animate blinds (move them back down)
 		if (!animate_blinds) {
-			blinds_shift -= 0.1f * rpm * (time - lasttime) / 1000.0f;
+			blinds_shift -= 0.075f * rpm * (time - lasttime) / 1000.0f;
 			if (blinds_shift <= 0) {
 				blinds_shift = 0;
 			}
@@ -561,6 +554,13 @@ void idlefunc()
 				scale_y_theta = 1.0f;
 			}
 		
+		}
+		// animate snowglobe
+		if (animate_globe) {
+			snowglobe_theta += 1.0f * rpm * (time - lasttime) / 1000.0f;
+			if (snowglobe_theta >= 360.0f) {
+				snowglobe_theta /= 360.0f;
+			}
 		}
 		// Update lasttime (reset timer)
 		lasttime = time;
@@ -687,7 +687,7 @@ void create_Mirror()
 	// Reset background
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// TODO: Set projection matrix for flat "mirror" camera
+	// Set projection matrix for flat "mirror" camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0.0f, 8.0f, -7.0f, 7.0f, 0.5f, 50.0f);
@@ -1148,8 +1148,7 @@ void create_lists()
 
 
 	// presents
-
-		//1
+		// present 1
 	glPushMatrix();
 	glUseProgram(textureShaderProg);
 	glUniform1i(texSampler, 0);
@@ -1158,7 +1157,7 @@ void create_lists()
 	glRotatef(45, 0, 1, 0);
 	texturecube();
 	glPopMatrix();
-	//2
+	// present 2
 	glPushMatrix();
 	glUseProgram(textureShaderProg);
 	glUniform1i(texSampler, 0);
@@ -1169,7 +1168,7 @@ void create_lists()
 	texturecube();
 	glPopMatrix();
 
-	//3
+	// present 3
 	glPushMatrix();
 	glUseProgram(textureShaderProg);
 	glUniform1i(texSampler, 0);
@@ -1184,7 +1183,7 @@ void create_lists()
 
 	// tree top list
 	glNewList(TREE_TOP, GL_COMPILE);
-	glPushAttrib(GL_CURRENT_BIT);
+		glPushAttrib(GL_CURRENT_BIT);
 		// top
 		glPushMatrix();
 		glUseProgram(textureShaderProg);
@@ -1206,30 +1205,127 @@ void create_lists()
 		glScalef(0.5, 0.5, 0.5);
 		glutSolidIcosahedron();
 		glPopMatrix();
-	glPopAttrib();
+		glPopAttrib();
 	glEndList();
 
 
 	// mirror 
 	glNewList(MIRROR, GL_COMPILE);
-	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(defaultShaderProg);
-	glPushMatrix();
+		glPushAttrib(GL_CURRENT_BIT);
+		glUseProgram(defaultShaderProg);
+		glPushMatrix();
 
-	glPopMatrix();
-	glPopAttrib();
+		glPopMatrix();
+		glPopAttrib();
 	glEndList();
 
 
 	// desk list
 	glNewList(DESK, GL_COMPILE);
-	glPushAttrib(GL_CURRENT_BIT);
-	glPushMatrix();
-	glTranslatef(DESK_OFFSET-1, -wall_height/1.75f, DESK_OFFSET);
-	glScalef(2.0f, 0.2f, 4.0f);
-	colorcube();
-	glPopMatrix();
-	glPopAttrib();
+		glPushAttrib(GL_CURRENT_BIT);
+		glPushMatrix();
+		set_material(GL_FRONT_AND_BACK, &ruby);
+		glTranslatef(DESK_OFFSET-1, -wall_height/1.75f, DESK_OFFSET);
+		glScalef(2.0f, 0.2f, 4.0f);
+		colorcube();
+		glPopMatrix();
+		glPopAttrib();
 	glEndList();
 
+	// full window pane
+	glNewList(FULL_WINDOW_PANE, GL_COMPILE);
+		glPushAttrib(GL_CURRENT_BIT);
+		glPushMatrix();
+		glTranslatef(0, 0.25f, (wall_length * 2) - 0.25f);
+		glScalef(1.2, 1, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+		// bottom
+		glPushMatrix();
+		glTranslatef(0, -4.0f, (wall_length * 2) - 0.25f);
+		glScalef(1.2, 1, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+		// right side
+		glPushMatrix();
+		glTranslatef(-2.15f, -2.0f, (wall_length * 2) - 0.25f);
+		glRotatef(90, 0, 0, 1);
+		glScalef(1.05f, 1.05f, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+		// left side 
+		glPushMatrix();
+		glTranslatef(2.15f, -2.0f, (wall_length * 2) - 0.25f);
+		glRotatef(90, 0, 0, 1);
+		glScalef(1.05f, 1.05f, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+		// middle column
+		glPushMatrix();
+		glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
+		glRotatef(90, 0, 0, 1);
+		glScalef(1.05f, 1.05f, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+		// middle row
+		glPushMatrix();
+		glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
+		glScalef(1.05f, 1.05f, 1);
+		glCallList(WINDOW_PANE);
+		glPopMatrix();
+		glPopAttrib();
+	glEndList();
+
+	// translucent sphere (snow globe)
+
+	glNewList(SNOWGLOBE, GL_COMPILE);
+		glPushAttrib(GL_CURRENT_BIT);
+			//inside piece
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[SNOWGLOBE_TEX]);
+		glColor3f(0.0f, 0.0f, 0.0f);
+		glRotatef(-90.0f, 0, 1, 0);
+		glRotatef(-90, 1, 0, 0);
+		glScalef(0.8, 0.8, 0.8);
+		gluSphere(tree_top, 1.0f, 100, 100);
+		glPopMatrix();
+			//white disk for snow
+		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glTranslatef(0, -0.7f, 0);
+		glRotatef(-90, 1, 0, 0);
+
+		gluDisk(tree_stump, 0.01f, globe_top_rad, globe_base_stacks, globe_base_slices);
+		glPopMatrix();
+		
+			//translucent cover
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glUseProgram(defaultShaderProg);
+		//glass color
+		glColor4f(0.658f, 0.8f, 0.843f, 0.3f);
+		glutSolidSphere(1.0f, 100, 100);
+		glDisable(GL_BLEND);
+		glPopMatrix();
+		glPopAttrib();
+	glEndList();
+
+	// snowglobe base
+	glNewList(SNOWGLOBE_BASE, GL_COMPILE);
+		glPushAttrib(GL_CURRENT_BIT);
+		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		setColor(CHOCOLATE_BROWN);
+		glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 2.0f, -TABLE_OFFSET);
+		glRotatef(-90.0f, 1, 0, 0);
+		gluCylinder(tree_stump, globe_bot_rad, globe_top_rad, globe_height, globe_base_stacks, globe_base_slices);
+		glPopMatrix();
+		glPopAttrib();
+		glEndList();
+
+	
 }

@@ -34,6 +34,10 @@ int projectionType = ORTHOGRAPHIC;
 #define DESK 20
 #define WINDOW_PANE 21
 #define WINDOW_BLINDS 22
+#define SNOWGLOBE 23
+#define SNOWGLOBE_BASE 24
+#define FULL_WINDOW_PANE 25
+
 
 // Color identifiers
 #define RED 0
@@ -49,10 +53,11 @@ int projectionType = ORTHOGRAPHIC;
 #define BROWN 10
 #define GLASS 11
 #define WHITE_SAND 12
+#define CHOCOLATE_BROWN 13
 
 // Vertex colors
 GLfloat current_color[][3] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 0.5f, 0.5f}, { 1.0f, 1.0f, 0.0f } ,{0.69f, 0.13f, 0.13f}, {1.0f,0.35f,0.39f},{0.0f, 1.0f, 1.0f},
-{0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f}, {0.658f, 0.8f, 0.843f}, {0.878f, 0.851f, 0.7801f} };
+{0.93f,0.51f , 0.93f}, {0.0f, 0.0f, 0.0f}, {0.82f, 0.41f, 0.11f}, {0.658f, 0.8f, 0.843f}, {0.878f, 0.851f, 0.7801f} , {0.247f, 0.0f, 0.0588f} };
 GLint color = RED;
 
 // cube vertices
@@ -117,6 +122,13 @@ GLfloat fan_radius = 2;
 GLfloat fan_slices = 20;
 GLfloat fan_stacks = 20;
 
+// Snowglobe variables
+GLfloat globe_bot_rad = 1.1f;
+GLfloat globe_top_rad = 0.7f;
+GLfloat globe_base_stacks = 100;
+GLfloat globe_base_slices = 100;
+GLfloat globe_height = 0.8f;
+
 // Animation variables
 GLint time = 0;
 GLint lasttime = 0;
@@ -127,6 +139,8 @@ GLint spin_tree = 0;
 GLint animate_blinds = 0;
 GLfloat blinds_shift = 0.0f;
 GLfloat scale_y_theta = 1.0f;
+GLfloat snowglobe_theta = 0.0f;
+GLint animate_globe = 0;
 #define BLINDS_MAX_SHIFT 1.25f
 
 // chair variables
@@ -138,6 +152,8 @@ GLfloat scale_y_theta = 1.0f;
 #define CHAIR_SEAT_SCALE 1
 #define CHAIR_SEAT_SCALE_Y 0.2
 #define CHAIR_TO_CHAIR_DIST 7.0f
+
+#define TABLE_OFFSET -7.0f
 
 
 // desk variables
@@ -165,8 +181,9 @@ GLint div_level = 8;
 #define WALL_TEXTURE 15
 #define WINDOW_PANE_TEX 16
 #define WINDOW_BLINDS_TEXTURE 17
+#define SNOWGLOBE_TEX 18
 
-#define NUM_TEXTURES 18
+#define NUM_TEXTURES 19
 
 
 	// texture array
@@ -178,7 +195,7 @@ GLint div_level = 8;
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
-												{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"} };
+												{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"}, {"snowglobe_tex.jpg"} };
 
 
 	// texture coordinates
