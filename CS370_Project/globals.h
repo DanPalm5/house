@@ -39,6 +39,7 @@ int projectionType = ORTHOGRAPHIC;
 #define FULL_WINDOW_PANE 25
 #define TEAPOT_LIST 26
 #define CUP 27
+#define STEREO 28
 
 
 // Color identifiers
@@ -200,8 +201,9 @@ GLint div_level = 8;
 #define WINDOW_PANE_TEX 16
 #define WINDOW_BLINDS_TEXTURE 17
 #define SNOWGLOBE_TEX 18
+#define STEREO_TEX 19
 
-#define NUM_TEXTURES 19
+#define NUM_TEXTURES 20
 
 
 	// texture array
@@ -213,7 +215,8 @@ GLint div_level = 8;
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
-												{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"}, {"snowglobe_tex.jpg"} };
+												{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"}, 
+												{"snowglobe_tex.jpg"}, {"stereo_tex.jpg"} };
 
 
 	// texture coordinates

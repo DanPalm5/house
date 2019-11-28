@@ -344,6 +344,11 @@ void render_Scene()
 	glCallList(SNOWGLOBE_BASE);
 	glPopMatrix();
 
+	// speaker
+	glPushMatrix();
+	glCallList(STEREO);
+	glPopMatrix();
+
 
 	// cup (MUST BE RENDERED LAST)
 	glPushMatrix();
@@ -1395,7 +1400,22 @@ void create_lists()
 		gluCylinder(tree_stump, CUP_RAD, CUP_RAD, CUP_HEIGHT, 100, 100);
 		glDisable(GL_BLEND);
 		glPopMatrix();
+		glPopAttrib();
+		glEndList();
 
+		//stereo list
+		glNewList(STEREO, GL_COMPILE);
+		glPushAttrib(GL_CURRENT_BIT);
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glPushMatrix();
+		glBindTexture(GL_TEXTURE_2D, tex_ids[STEREO_TEX]);
+		glTranslatef(17, -wall_height / 2.0f, (-wall_length * 2) + 2);
+		glRotatef(-90, 1, 0, 0);
+		glRotatef(45, 0, 0, 1);
+		glScalef(2, 2, 4);
+		texturecube();
+		glPopMatrix();
 		glPopAttrib();
 		glEndList();
 }
