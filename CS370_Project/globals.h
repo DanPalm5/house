@@ -37,6 +37,8 @@ int projectionType = ORTHOGRAPHIC;
 #define SNOWGLOBE 23
 #define SNOWGLOBE_BASE 24
 #define FULL_WINDOW_PANE 25
+#define TEAPOT_LIST 26
+#define CUP 27
 
 
 // Color identifiers
@@ -129,6 +131,19 @@ GLfloat globe_base_stacks = 100;
 GLfloat globe_base_slices = 100;
 GLfloat globe_height = 0.8f;
 
+// teapot variables
+#define POT_X TABLE_OFFSET - 1.0f
+#define POT_Y (-wall_height/2.0f) 
+#define POT_Z 10.0f
+
+#define CUP_X TABLE_OFFSET
+#define CUP_Y (-wall_height/2.0f) - 1.2f
+#define CUP_Z 9.99f
+#define CUP_HEIGHT 0.9f
+#define CUP_RAD 0.25f
+
+#define TEA_HEIGHT 0.6f
+#define TEA_RAD 0.23f
 // Animation variables
 GLint time = 0;
 GLint lasttime = 0;
@@ -141,6 +156,9 @@ GLfloat blinds_shift = 0.0f;
 GLfloat scale_y_theta = 1.0f;
 GLfloat snowglobe_theta = 0.0f;
 GLint animate_globe = 0;
+GLint animate_teapot = 0;
+GLint teapot_dir = 1;
+GLfloat teapot_theta = 0.0f;
 #define BLINDS_MAX_SHIFT 1.25f
 
 // chair variables
@@ -210,7 +228,13 @@ GLfloat cube_tex[][2] = { {0,1}, {0, 0}, {1, 0}, {1,1},
 
 
 //light1 (white spotlight) Parameters 
-GLfloat light1_pos[] = { DESK_OFFSET - 1, wall_height / 5.0f, DESK_OFFSET - 0.5f };
+GLfloat light1_pos[] = { DESK_OFFSET , wall_height / 5.0f, DESK_OFFSET - 0.5f };
 GLfloat light1_dir[] = { 0,-1,0};
 GLfloat light1_cutoff = 15;
 GLfloat light1_exp = 1;
+
+// light2 (lime spotlight) parameters
+GLfloat light2_pos[]{ POT_X, POT_Y + 5.0f, POT_Z };
+GLfloat light2_dir[] = { 0, -1, 0 };
+GLfloat light2_cutoff = 30;
+GLfloat light2_exp = 1;

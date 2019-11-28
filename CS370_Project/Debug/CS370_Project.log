@@ -12,72 +12,72 @@ C:\CS370\assignments\house\CS370_Project\shaderutils.h(24,1): warning C4996:  'c
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_io.h(459): message :  see declaration of 'close'
 C:\CS370\assignments\house\CS370_Project\shaderutils.h(43,1): warning C4996:  'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message :  see declaration of 'fopen'
-C:\CS370\assignments\house\CS370_Project\globals.h(101,28): warning C4305:  'initializing': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\globals.h(106,21): warning C4244:  'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\globals.h(103,28): warning C4305:  'initializing': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\globals.h(108,21): warning C4244:  'initializing': conversion from 'double' to 'GLfloat', possible loss of data
 C:\CS370\assignments\house\CS370_Project\vectorops.h(12,13): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(241,65): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(249,46): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(310,64): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(310,46): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(310,26): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(323,60): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(398,18): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(401,18): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(404,17): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(407,17): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(411,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(412,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(422,17): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(425,17): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(428,18): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(431,18): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(434,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(435,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(444,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(445,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(453,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(245,65): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(253,46): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(314,64): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(314,46): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(314,26): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(327,60): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(418,18): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(421,18): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(424,17): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(427,17): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(431,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(432,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(442,17): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(445,17): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(448,18): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(451,18): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
 C:\CS370\assignments\house\CS370_Project\house.cpp(454,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(463,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(472,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(509,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(510,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(722,33): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(724,33): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(726,33): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(728,32): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(736,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(737,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(738,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(739,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(953,33): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(968,42): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(968,30): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(973,20): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\house.cpp(994,61): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(994,34): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(995,20): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\house.cpp(1006,61): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1006,34): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1021,64): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1021,37): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1022,20): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\house.cpp(1090,65): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\house.cpp(1128,54): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1130,24): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\house.cpp(1131,82): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1131,68): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1142,62): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1145,79): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1145,66): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1156,66): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1176,66): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1193,67): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1193,54): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1240,21): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\house.cpp(1246,21): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\house.cpp(1291,25): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
-C:\CS370\assignments\house\CS370_Project\house.cpp(1301,64): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1301,45): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1325,90): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\CS370\assignments\house\CS370_Project\house.cpp(1325,71): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(455,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(464,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(465,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(473,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(474,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(483,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(492,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(533,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(534,26): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(761,33): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(763,33): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(765,33): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(767,32): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(775,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(776,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(777,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(778,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(992,33): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1007,42): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1007,30): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1012,20): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\house.cpp(1033,61): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1033,34): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1034,20): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\house.cpp(1045,61): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1045,34): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1060,64): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1060,37): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1061,20): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\house.cpp(1129,65): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\house.cpp(1167,54): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1169,24): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\house.cpp(1170,82): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1170,68): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1181,62): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1184,79): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1184,66): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1195,66): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1215,66): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1232,67): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1232,54): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1278,21): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\house.cpp(1284,21): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\house.cpp(1328,25): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+C:\CS370\assignments\house\CS370_Project\house.cpp(1338,64): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1338,45): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1360,90): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1360,71): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
   CS370_Project.vcxproj -> C:\CS370\assignments\house\Debug\CS370_Project.exe

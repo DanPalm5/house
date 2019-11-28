@@ -2,8 +2,10 @@
 // Final Project
 //Daniel Palmieri T/TR 12:30-1:45
 //Room currently contains texture mapped windows, table and chairs, door, fireplace, christmas tree with presents, snow globe, and a desk with a light on it. 
-// to spin tree use T, to open/close blinds use O.
+// to spin tree use T, 
+// to open/close blinds use O.
 // to spin snowglobe, use G. 
+// to spin teapot, use V
 // to toggle projection modes, use P.
 #ifdef OSX
 	#include <GLUT/glut.h>
@@ -208,8 +210,10 @@ void display()
 // Scene render function
 void render_Scene()
 {
-
+	// spotlight on desk
 	set_SpotLight(GL_LIGHT1, &red_light , light1_pos, light1_dir, light1_cutoff, light1_exp);
+	// spotlight on teapot
+	set_SpotLight(GL_LIGHT2, &lime_light, light1_pos, light2_dir, light2_cutoff, light2_exp);
 	
 
 	// draw room
@@ -287,7 +291,7 @@ void render_Scene()
 	glPushMatrix();
 	glUseProgram(lightShaderProg);
 	glUniform1i(numLights_param, numLights);
-	set_material(GL_FRONT_AND_BACK, &brass);
+	set_material(GL_FRONT_AND_BACK, &ruby);
 	glCallList(DESK);
 	glPopMatrix();
 
@@ -323,13 +327,29 @@ void render_Scene()
 	glTranslatef(DESK_OFFSET + 3, -wall_height+1, DESK_OFFSET - 0.5);
 	glCallList(FULL_CHAIR);
 	glPopMatrix();
-
+	
+	// teapot 
+	glPushMatrix();
+	glUseProgram(lightShaderProg);
+	glUniform1i(numLights_param, numLights);
+	set_material(GL_FRONT_AND_BACK, &lime);
+	glTranslatef(POT_X, POT_Y, POT_Z);
+	glRotatef(teapot_theta, 0, 0, 1);
+	glCallList(TEAPOT_LIST);
+	glPopMatrix();
 
 	//snow globe base
 	glPushMatrix();
+	glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 2.0f, -TABLE_OFFSET);
 	glCallList(SNOWGLOBE_BASE);
 	glPopMatrix();
 
+
+	// cup (MUST BE RENDERED LAST)
+	glPushMatrix();
+	glTranslatef(CUP_X, CUP_Y, CUP_Z);
+	glCallList(CUP);
+	glPopMatrix();
 
 	// snow globe (MUST BE RENDERED LAST)
 	glPushMatrix();
@@ -487,9 +507,13 @@ void keyfunc(unsigned char key, int x, int y)
 			animate_blinds = !animate_blinds;
 		}
 
-		//snowglobe animations
+		// snowglobe animations
 		if (key == 'G' || key == 'g') {
 			animate_globe = !animate_globe;
+		}
+		// toggle teapot "pouring"
+		if (key == 'V' || key == 'v') {
+			animate_teapot = !animate_teapot;
 		}
 	}
 
@@ -553,13 +577,28 @@ void idlefunc()
 			if (scale_y_theta >= 1.0f) {
 				scale_y_theta = 1.0f;
 			}
-		
+
 		}
 		// animate snowglobe
 		if (animate_globe) {
 			snowglobe_theta += 1.0f * rpm * (time - lasttime) / 1000.0f;
 			if (snowglobe_theta >= 360.0f) {
 				snowglobe_theta /= 360.0f;
+			}
+		}
+		if (animate_teapot) {
+			teapot_theta += teapot_dir * 4.0f * rpm * (time - lasttime) / 1000.0f;
+
+			// Completed full revolution
+			if (teapot_theta < -35.0f)
+			{
+				teapot_theta = -34.9f;
+				teapot_dir = -teapot_dir;
+			}
+			else if (teapot_theta > 0.0f)
+			{
+				teapot_theta = -0.1f;
+				teapot_dir = -teapot_dir;
 			}
 		}
 		// Update lasttime (reset timer)
@@ -1224,7 +1263,6 @@ void create_lists()
 	glNewList(DESK, GL_COMPILE);
 		glPushAttrib(GL_CURRENT_BIT);
 		glPushMatrix();
-		set_material(GL_FRONT_AND_BACK, &ruby);
 		glTranslatef(DESK_OFFSET-1, -wall_height/1.75f, DESK_OFFSET);
 		glScalef(2.0f, 0.2f, 4.0f);
 		colorcube();
@@ -1277,7 +1315,6 @@ void create_lists()
 	glEndList();
 
 	// translucent sphere (snow globe)
-
 	glNewList(SNOWGLOBE, GL_COMPILE);
 		glPushAttrib(GL_CURRENT_BIT);
 			//inside piece
@@ -1291,13 +1328,13 @@ void create_lists()
 		glScalef(0.8, 0.8, 0.8);
 		gluSphere(tree_top, 1.0f, 100, 100);
 		glPopMatrix();
+
 			//white disk for snow
 		glPushMatrix();
 		glUseProgram(defaultShaderProg);
 		glColor3f(1.0f, 1.0f, 1.0f);
 		glTranslatef(0, -0.7f, 0);
 		glRotatef(-90, 1, 0, 0);
-
 		gluDisk(tree_stump, 0.01f, globe_top_rad, globe_base_stacks, globe_base_slices);
 		glPopMatrix();
 		
@@ -1306,8 +1343,7 @@ void create_lists()
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glUseProgram(defaultShaderProg);
-		//glass color
-		glColor4f(0.658f, 0.8f, 0.843f, 0.3f);
+		glColor4f(0.658f, 0.8f, 0.843f, 0.3f);//glass color
 		glutSolidSphere(1.0f, 100, 100);
 		glDisable(GL_BLEND);
 		glPopMatrix();
@@ -1320,12 +1356,46 @@ void create_lists()
 		glPushMatrix();
 		glUseProgram(defaultShaderProg);
 		setColor(CHOCOLATE_BROWN);
-		glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 2.0f, -TABLE_OFFSET);
 		glRotatef(-90.0f, 1, 0, 0);
 		gluCylinder(tree_stump, globe_bot_rad, globe_top_rad, globe_height, globe_base_stacks, globe_base_slices);
 		glPopMatrix();
 		glPopAttrib();
 		glEndList();
 
-	
+	// teapot 
+		glNewList(TEAPOT_LIST, GL_COMPILE);
+		glPushAttrib(GL_CURRENT_BIT);
+		glUseProgram(lightShaderProg);
+		glPushMatrix();
+		glutSolidTeapot(0.5f);
+		glPopMatrix();
+		glPopAttrib();
+		glEndList();
+
+		// cup with tea
+		glNewList(CUP, GL_COMPILE);
+		glPushAttrib(GL_CURRENT_BIT);
+
+
+		// "tea" in cup
+		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		glColor4f(0.82f, 0.41f, 0.11f, 0.3f);
+		glRotatef(-90, 1, 0, 0);
+		gluCylinder(tree_top, TEA_RAD, TEA_RAD, TEA_HEIGHT, 100, 100);
+		glPopMatrix();
+		
+		// translucent cup
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glUseProgram(defaultShaderProg);
+		glColor4f(0.658f, 0.8f, 0.843f, 0.3f);//glass color
+		glRotatef(-90, 1, 0, 0);
+		gluCylinder(tree_stump, CUP_RAD, CUP_RAD, CUP_HEIGHT, 100, 100);
+		glDisable(GL_BLEND);
+		glPopMatrix();
+
+		glPopAttrib();
+		glEndList();
 }
