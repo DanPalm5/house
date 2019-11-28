@@ -1406,16 +1406,36 @@ void create_lists()
 		//stereo list
 		glNewList(STEREO, GL_COMPILE);
 		glPushAttrib(GL_CURRENT_BIT);
-		glUseProgram(textureShaderProg);
-		glUniform1i(texSampler, 0);
+			// stereo base cube
 		glPushMatrix();
-		glBindTexture(GL_TEXTURE_2D, tex_ids[STEREO_TEX]);
+		glUseProgram(defaultShaderProg);
+		setColor(GRAY);
 		glTranslatef(17, -wall_height / 2.0f, (-wall_length * 2) + 2);
 		glRotatef(-90, 1, 0, 0);
 		glRotatef(45, 0, 0, 1);
 		glScalef(2, 2, 4);
-		texturecube();
+		colorcube();
 		glPopMatrix();
+		
+			//front texture mapped piece
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[STEREO_TEX]);
+		glTranslatef(14.1, -wall_height, (-wall_length * 2) + 2.05f);
+		glRotatef(-45, 0, 1, 0);
+		glBegin(GL_POLYGON);
+		glTexCoord2f(0, 1);
+			glVertex3f(0, 0, 0);
+		glTexCoord2f(0, 0);
+			glVertex3f(4.0f, 0, 0);
+		glTexCoord2f(1, 0);
+			glVertex3f(4.0f, 7.75f, 0);
+		glTexCoord2f(1, 1);
+			glVertex3f(0, 7.75f, 0);
+		glEnd();
+		glPopMatrix();
+
 		glPopAttrib();
 		glEndList();
 }

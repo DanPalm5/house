@@ -148,7 +148,7 @@ GLfloat globe_height = 0.8f;
 // Animation variables
 GLint time = 0;
 GLint lasttime = 0;
-GLint fps = 30;
+GLint fps = 60;
 GLfloat rpm = 20.0f;
 GLfloat tree_theta = 0.0f;
 GLint spin_tree = 0;

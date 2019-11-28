@@ -80,4 +80,5 @@ C:\CS370\assignments\house\CS370_Project\house.cpp(1343,64): warning C4244:  'ar
 C:\CS370\assignments\house\CS370_Project\house.cpp(1343,45): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
 C:\CS370\assignments\house\CS370_Project\house.cpp(1365,90): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
 C:\CS370\assignments\house\CS370_Project\house.cpp(1365,71): warning C4244:  'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\CS370\assignments\house\CS370_Project\house.cpp(1425,62): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
   CS370_Project.vcxproj -> C:\CS370\assignments\house\Debug\CS370_Project.exe
