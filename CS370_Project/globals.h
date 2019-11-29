@@ -1,7 +1,7 @@
 // Projection states
 #define ORTHOGRAPHIC 0
 #define FIRSTPERSON 1
-int projectionType = ORTHOGRAPHIC;
+int projectionType = FIRSTPERSON;
 
 // Shader file utility functions
 #include "shaderutils.h"

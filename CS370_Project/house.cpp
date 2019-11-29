@@ -1,7 +1,8 @@
 // CS370 - Fall 2019
 // Final Project
 //Daniel Palmieri T/TR 12:30-1:45
-//Room currently contains texture mapped windows, table and chairs, door, fireplace, christmas tree with presents, snow globe, and a desk with a light on it. 
+//Room currently contains texture mapped windows, table and chairs, door, fireplace, christmas tree with presents,
+// stereo, snow globe, teapot and cup, and a desk with a light on it. 
 // to spin tree use T, 
 // to open/close blinds use O.
 // to spin snowglobe, use G. 
@@ -117,6 +118,7 @@ int main(int argc, char *argv[])
 	texSampler = glGetUniformLocation(textureShaderProg, "texMap");
 	lightTexSampler = glGetUniformLocation(lightTexProg, "texMap2");
 	num_texLights_param = glGetUniformLocation(lightTexProg, "numLights2");
+
 	glUseProgram(defaultShaderProg);
 
 	// Load textures
@@ -192,6 +194,12 @@ void display()
 		glLoadIdentity();
 		// gluLookAt(first person coordinates)
 		gluLookAt(eye_fp[X], eye_fp[Y], eye_fp[Z], at_fp[X], at_fp[Y], at_fp[Z], up_fp[X], up_fp[Y], up_fp[Z]);
+			if (camera_theta > 360.0f) {
+				camera_theta -= 360.0f;
+			}
+			at_fp[X] = (eye_fp[X] + cos(camera_theta));
+			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
+		
 	}
 
 	// Render scene
@@ -530,14 +538,7 @@ void keyfunc(unsigned char key, int x, int y)
 
 	if (key == 'p' || key == 'P') {
 		projectionType = !projectionType;
-		if (FIRSTPERSON) {
-			camera_theta += camera_dtheta;
-			if (camera_theta > 360.0f) {
-				camera_theta -= 360.0f;
-			}
-			at_fp[X] = (eye_fp[X] + cos(camera_theta));
-			at_fp[Z] = (eye_fp[Z] + sin(camera_theta));
-		}
+		
 	}
 
 }
@@ -1385,11 +1386,11 @@ void create_lists()
 		// "tea" in cup
 		glPushMatrix();
 		glUseProgram(defaultShaderProg);
-		glColor4f(0.82f, 0.41f, 0.11f, 0.3f);
+		glColor4f(0.95f, 0.01f, 0.01f, 0.3f); // red
 		glRotatef(-90, 1, 0, 0);
 		gluCylinder(tree_top, TEA_RAD, TEA_RAD, TEA_HEIGHT, 100, 100);
 		glPopMatrix();
-		
+
 		// translucent cup
 		glPushMatrix();
 		glEnable(GL_BLEND);
