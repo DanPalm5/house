@@ -40,6 +40,7 @@ int projectionType = FIRSTPERSON;
 #define TEAPOT_LIST 26
 #define CUP 27
 #define STEREO 28
+#define FAN_BLADES 29
 
 
 // Color identifiers
@@ -121,9 +122,12 @@ GLfloat stump_slices = 300;
 GLfloat stump_stacks = 300;
 
 // fan variables
-GLfloat fan_radius = 2;
+GLfloat fan_radius = 0.7;
 GLfloat fan_slices = 20;
 GLfloat fan_stacks = 20;
+GLfloat fan_theta = 0.0f;
+GLint spin_fan = 0;
+
 
 // Snowglobe variables
 GLfloat globe_bot_rad = 1.1f;
@@ -202,8 +206,10 @@ GLint div_level = 8;
 #define WINDOW_BLINDS_TEXTURE 17
 #define SNOWGLOBE_TEX 18
 #define STEREO_TEX 19
+#define FAN_LIGHT_TEX 20
+#define FAN_BLADE_TEX 21
 
-#define NUM_TEXTURES 20
+#define NUM_TEXTURES 22
 
 
 	// texture array
@@ -215,8 +221,9 @@ GLint div_level = 8;
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
-												{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"}, 
-												{"snowglobe_tex.jpg"}, {"stereo_tex.jpg"} };
+											{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"}, 
+											{"snowglobe_tex.jpg"}, {"stereo_tex.jpg"} , {"fan_light.png"} , 
+											{"fan_blade.jpeg"} };
 
 
 	// texture coordinates

@@ -6,7 +6,8 @@
 // to spin tree use T, 
 // to open/close blinds use O.
 // to spin snowglobe, use G. 
-// to spin teapot, use V
+// to spin teapot, use V.
+// to spin fan, use F.
 // to toggle projection modes, use P.
 #ifdef OSX
 	#include <GLUT/glut.h>
@@ -55,7 +56,7 @@ GLenum lights[4] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3 };
 GLUquadricObj* tree_stump;
 GLUquadricObj* tree_top;
 GLUquadricObj* tree_cover;
-
+GLUquadricObj* fan_center;
 
 
 void display();
@@ -67,7 +68,6 @@ void create_lists();
 void setColor(GLint colorID);
 void texturecube();
 void texquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat t1[], GLfloat t2[], GLfloat t3[], GLfloat t4[]);
-void load_image();
 bool load_textures();
 void create_Mirror();
 void render_Mirror();
@@ -140,6 +140,9 @@ int main(int argc, char *argv[])
 	gluQuadricDrawStyle(tree_cover, GLU_FILL);
 	gluQuadricTexture(tree_cover, GL_TRUE);
 
+	fan_center = gluNewQuadric();
+	gluQuadricDrawStyle(fan_center, GLU_FILL);
+	gluQuadricTexture(fan_center, GL_TRUE);
 
 	//create lists
 	create_lists();
@@ -269,9 +272,25 @@ void render_Scene()
 	glPopMatrix();
 
 	// fan
-	glPushMatrix();
-	glCallList(FAN);
-	glPopMatrix();
+		// fan base
+		glPushMatrix();
+		glTranslatef(0, wall_height / 2 + 3.0f, 0);
+		glRotatef(180, 1, 0, 0);
+		glCallList(SNOWGLOBE_BASE);
+		glPopMatrix();
+
+		// centerpiece of fan
+		glPushMatrix();
+		glCallList(FAN);
+		glPopMatrix();
+
+
+		// fan blades
+		glPushMatrix();
+		glRotatef(fan_theta, 0, 1, 0);
+		glCallList(FAN_BLADES);
+		glPopMatrix();
+
 	
 	// fireplace
 	glPushMatrix();
@@ -528,6 +547,10 @@ void keyfunc(unsigned char key, int x, int y)
 		if (key == 'V' || key == 'v') {
 			animate_teapot = !animate_teapot;
 		}
+		// spin fan
+		if (key == 'F' || key == 'f') {
+			spin_fan = !spin_fan;
+		}
 	}
 
 		// <esc> quits
@@ -607,6 +630,12 @@ void idlefunc()
 				teapot_dir = -teapot_dir;
 			}
 		}
+		if (spin_fan) {
+			fan_theta += 3.0f * rpm * (time - lasttime) / 1000.0f;
+			if (fan_theta >= 360.0f) {
+				fan_theta /= 360.0f;
+			}
+		}
 		// Update lasttime (reset timer)
 		lasttime = time;
 
@@ -629,11 +658,6 @@ void reshape(int w, int h)
 void setColor(GLint colorID)
 {
 	glColor3fv(current_color[colorID]);
-}
-
-void load_image() 
-{
-
 }
 
 bool load_textures() 
@@ -1002,30 +1026,45 @@ void create_lists()
 	glPopMatrix();
 	glEndList();
 
-	// fan
+	// fan center
 	glNewList(FAN, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(defaultShaderProg);
-
 	glPushMatrix();
-	setColor(VIOLET);
-	glTranslatef(0, wall_height / 2, 0);
-	glutSolidSphere(fan_radius, fan_slices, fan_stacks);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(2, wall_height / 2, 0);
-	glScalef(1, 0.1, 1);
-	glutSolidCube(2.0);
-	glTranslatef(-4, 0, 0);
-	glutSolidCube(2.0);
-	glTranslatef(2, 0, 2);
-	glutSolidCube(2.0);
-	glTranslatef(0, 0, -4);
-	glutSolidCube(2.0);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[FAN_LIGHT_TEX]);
+	glTranslatef(0, wall_height-1.5f, 0);
+	gluSphere(fan_center,fan_radius, fan_slices, fan_stacks);
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
+
+	// fan blades
+	glNewList(FAN_BLADES, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[FAN_BLADE_TEX]);
+	glTranslatef(2, wall_height-1.0f, 0);
+	glRotatef(180, 1, 0, 0);
+	glScalef(2.0f, 0.1f, 0.5f);
+	texturecube();	
+
+	glTranslatef(-2, 0, 0);
+	texturecube();
+
+	glTranslatef(1, 0, -4);
+	glScalef(0.25f, 1.0f, 4.0f);
+	texturecube();
+
+	glTranslatef(0, 0, 2);
+	texturecube();	
+
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+	
 
 	// fireplace list
 	glNewList(FIREPLACE, GL_COMPILE);
