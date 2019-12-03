@@ -37,6 +37,8 @@ GLchar* texVertexFile = "texturevert.vs";
 GLchar* texFragmentFile = "texturefrag.fs";
 GLchar* lightTexVertexFile = "lightTex.vs";
 GLchar* lightTexFragmentFile = "lightTex.fs";
+GLchar* bumpVertexFile = "bumpvert.vs";
+GLchar* bumpFragmentFile = "bumpfrag.fs";
 
 // Shader objects
 GLuint defaultShaderProg;
@@ -48,6 +50,13 @@ GLuint num_texLights_param;
 GLint numLights = 2;
 GLint texSampler;
 GLint lightTexSampler;
+GLint bumpSampler[2];
+GLuint bumpProg;
+
+// global tangent parameter
+GLuint tangParam;
+
+
 
 GLenum lights[4] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3 };
 
@@ -114,10 +123,18 @@ int main(int argc, char *argv[])
 	lightShaderProg = load_shaders(lightVertexFile, lightFragmentFile);
 	textureShaderProg = load_shaders(texVertexFile, texFragmentFile);
 	lightTexProg = load_shaders(lightTexVertexFile, lightTexFragmentFile);
+	bumpProg = load_shaders(bumpVertexFile, bumpFragmentFile);
+
+
+	//Associate tangent shader variable
 	numLights_param = glGetUniformLocation(lightShaderProg, "numLights");
+	bumpSampler[WALL_UNIT] = glGetUniformLocation(bumpProg, "colorMap");
+	bumpSampler[MAP_UNIT] = glGetUniformLocation(bumpProg, "normalMap");
 	texSampler = glGetUniformLocation(textureShaderProg, "texMap");
 	lightTexSampler = glGetUniformLocation(lightTexProg, "texMap2");
 	num_texLights_param = glGetUniformLocation(lightTexProg, "numLights2");
+	tangParam = glGetAttribLocation(bumpProg, "tangento");
+
 
 	glUseProgram(defaultShaderProg);
 

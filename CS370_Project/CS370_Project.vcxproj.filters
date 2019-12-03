@@ -56,6 +56,12 @@
     <None Include="..\..\..\..\Users\super\Downloads\lightTex.fs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\..\labs\CS370_Lab22Sol\CS370_Lab22Sol\bumpfrag.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\labs\CS370_Lab22Sol\CS370_Lab22Sol\bumpvert.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="house.cpp">

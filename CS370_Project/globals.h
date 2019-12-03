@@ -10,6 +10,8 @@ int projectionType = FIRSTPERSON;
 #define Z 2
 #define RAD2DEG (180.0f/3.14159f)
 #define DEG2RAD (3.14159f/180.0f)
+#define WALL_UNIT 0
+#define MAP_UNIT 1
 
 // lists
 #define CUBE 1

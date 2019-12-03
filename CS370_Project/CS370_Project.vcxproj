@@ -129,6 +129,8 @@
   <ItemGroup>
     <None Include="..\..\..\..\Users\super\Downloads\lightTex.fs" />
     <None Include="..\..\..\..\Users\super\Downloads\lightTex.vs" />
+    <None Include="..\..\..\labs\CS370_Lab22Sol\CS370_Lab22Sol\bumpfrag.fs" />
+    <None Include="..\..\..\labs\CS370_Lab22Sol\CS370_Lab22Sol\bumpvert.vs" />
     <None Include="defaultfrag.fs" />
     <None Include="defaultvert.vs" />
     <None Include="lightfrag.fs" />
