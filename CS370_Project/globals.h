@@ -11,7 +11,9 @@ int projectionType = FIRSTPERSON;
 #define RAD2DEG (180.0f/3.14159f)
 #define DEG2RAD (3.14159f/180.0f)
 #define WALL_UNIT 0
-#define MAP_UNIT 1
+#define NORMAL_UNIT 1
+#define WALL_BUMP 0
+#define NORMAL_BUMP 1
 
 // lists
 #define CUBE 1
@@ -210,8 +212,9 @@ GLint div_level = 8;
 #define STEREO_TEX 19
 #define FAN_LIGHT_TEX 20
 #define FAN_BLADE_TEX 21
+#define NORMAL_MAP 22
 
-#define NUM_TEXTURES 22
+#define NUM_TEXTURES 23
 
 
 	// texture array
@@ -225,7 +228,7 @@ GLint div_level = 8;
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
 											{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"}, 
 											{"snowglobe_tex.jpg"}, {"stereo_tex.jpg"} , {"fan_light.png"} , 
-											{"fan_blade.jpeg"} };
+											{"fan_blade.jpeg"}, {"NormalMap.png"} };
 
 
 	// texture coordinates

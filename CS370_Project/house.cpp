@@ -56,8 +56,7 @@ GLuint bumpProg;
 // global tangent parameter
 GLuint tangParam;
 
-
-
+// lights
 GLenum lights[4] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3 };
 
 
@@ -129,7 +128,7 @@ int main(int argc, char *argv[])
 	//Associate tangent shader variable
 	numLights_param = glGetUniformLocation(lightShaderProg, "numLights");
 	bumpSampler[WALL_UNIT] = glGetUniformLocation(bumpProg, "colorMap");
-	bumpSampler[MAP_UNIT] = glGetUniformLocation(bumpProg, "normalMap");
+	bumpSampler[NORMAL_UNIT] = glGetUniformLocation(bumpProg, "normalMap");
 	texSampler = glGetUniformLocation(textureShaderProg, "texMap");
 	lightTexSampler = glGetUniformLocation(lightTexProg, "texMap2");
 	num_texLights_param = glGetUniformLocation(lightTexProg, "numLights2");
@@ -941,10 +940,23 @@ void create_lists()
 	// wall list
 	glNewList(WALL, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
+										/*glUseProgram(bumpProg);
+
+										// Associate WALL with texture unit 0
+										glUniform1i(bumpSampler[WALL_UNIT], WALL_BUMP);
+										glActiveTexture(GL_TEXTURE0);
+ -> Started to bump map					glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEXTURE]);
+	 but wasn't sucessful
+										// Associate NORMAL with texture unit 1
+										glUniform1i(bumpSampler[NORMAL_UNIT], NORMAL_BUMP);
+										glActiveTexture(GL_TEXTURE1);
+										glBindTexture(GL_TEXTURE_2D, tex_ids[NORMAL_MAP]);
+										*/
 	glUseProgram(textureShaderProg);
 	glUniform1i(texSampler, 0);
-	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEXTURE]);
+
+	glPushMatrix();
 	glScalef(1, wall_height, wall_length);
 	texturecube();
 	glPopMatrix();
