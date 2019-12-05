@@ -10,9 +10,9 @@ int projectionType = FIRSTPERSON;
 #define Z 2
 #define RAD2DEG (180.0f/3.14159f)
 #define DEG2RAD (3.14159f/180.0f)
-#define WALL_UNIT 0
+#define SPHERE_UNIT 0
 #define NORMAL_UNIT 1
-#define WALL_BUMP 0
+#define SPHERE_BUMP 0
 #define NORMAL_BUMP 1
 
 // lists
@@ -32,19 +32,19 @@ int projectionType = FIRSTPERSON;
 #define TREE 14
 #define TABLE_TOP 15
 #define CEILING 16
-#define MIRROR 17
-#define TREE_TOP 18
-#define STAR 19
-#define DESK 20
-#define WINDOW_PANE 21
-#define WINDOW_BLINDS 22
-#define SNOWGLOBE 23
-#define SNOWGLOBE_BASE 24
-#define FULL_WINDOW_PANE 25
-#define TEAPOT_LIST 26
-#define CUP 27
-#define STEREO 28
-#define FAN_BLADES 29
+#define TREE_TOP 17
+#define STAR 18
+#define DESK 19
+#define WINDOW_PANE 20
+#define WINDOW_BLINDS 21
+#define SNOWGLOBE 22
+#define SNOWGLOBE_BASE 23
+#define FULL_WINDOW_PANE 24
+#define TEAPOT_LIST 25
+#define CUP 26
+#define STEREO 27
+#define FAN_BLADES 28
+#define LEMON 29
 
 
 // Color identifiers
@@ -213,23 +213,23 @@ GLint div_level = 8;
 #define FAN_LIGHT_TEX 20
 #define FAN_BLADE_TEX 21
 #define NORMAL_MAP 22
+#define LEMON_TEX 23
 
-#define NUM_TEXTURES 23
+#define NUM_TEXTURES 24
 
 
 	// texture array
 	GLuint tex_ids[NUM_TEXTURES];
 
 	// Texture files
-	char texture_files[NUM_TEXTURES][20] = { {"blank.bmp"}, {"wood_floor_tex.jpg"} , {"door_texture.jpg"},
+	char texture_files[NUM_TEXTURES][30] = { {"blank.bmp"}, {"wood_floor_tex.jpg"} , {"door_texture.jpg"},
 											{"stool_texture.jpg"}, {"stool_leg.jpeg"}, {"fire_tex.jpg"}, 
 											{"fireplace.png"}, {"work_of_art.jpg"}, {"tree_top_tex.jpg"}, 
 											{"tree_stump_tex.jpg"} , {"ceiling_tex.jpg"}, {"tree_cover.jpg"},
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
 											{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"}, 
 											{"snowglobe_tex.jpg"}, {"stereo_tex.jpg"} , {"fan_light.png"} , 
-											{"fan_blade.jpeg"}, {"NormalMap.png"} };
-
+											{"fan_blade.jpeg"}, {"NormalMap.png"}, {"lemon_peel_tex.jpg"} };
 
 	// texture coordinates
 

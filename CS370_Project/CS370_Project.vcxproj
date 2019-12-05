@@ -121,6 +121,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="globals.h" />
+    <ClInclude Include="sphere.h" />
     <ClInclude Include="vectorops.h" />
     <ClInclude Include="lighting.h" />
     <ClInclude Include="materials.h" />

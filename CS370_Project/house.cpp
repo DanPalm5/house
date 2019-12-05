@@ -23,6 +23,7 @@
 #include "materials.h"
 #include "globals.h"
 #include "vectorops.h"
+#include "sphere.h"
 
 
 // Global screen dimensions
@@ -127,7 +128,7 @@ int main(int argc, char *argv[])
 
 	//Associate tangent shader variable
 	numLights_param = glGetUniformLocation(lightShaderProg, "numLights");
-	bumpSampler[WALL_UNIT] = glGetUniformLocation(bumpProg, "colorMap");
+	bumpSampler[SPHERE_UNIT] = glGetUniformLocation(bumpProg, "colorMap");
 	bumpSampler[NORMAL_UNIT] = glGetUniformLocation(bumpProg, "normalMap");
 	texSampler = glGetUniformLocation(textureShaderProg, "texMap");
 	lightTexSampler = glGetUniformLocation(lightTexProg, "texMap2");
@@ -238,7 +239,7 @@ void display()
 void render_Scene()
 {
 	// spotlight on desk
-	set_SpotLight(GL_LIGHT1, &red_light , light1_pos, light1_dir, light1_cutoff, light1_exp);
+	set_SpotLight(GL_LIGHT1, &white_light , light1_pos, light1_dir, light1_cutoff, light1_exp);
 	// spotlight on teapot
 	set_SpotLight(GL_LIGHT2, &lime_light, light1_pos, light2_dir, light2_cutoff, light2_exp);
 	
@@ -391,6 +392,30 @@ void render_Scene()
 	glPushMatrix();
 	glCallList(STEREO);
 	glPopMatrix();
+
+
+
+	// bump mapped spheres (fruit)
+	glPushMatrix();
+	glCallList(LEMON);
+	glPopMatrix();
+	/*glUseProgram(bumpProg);
+
+	// Associate ORANGE with texture unit 0
+	glUniform1i(bumpSampler[SPHERE_UNIT], SPHERE_UNIT);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[LEMON_TEX]);
+
+	// Associate NORMAL with texture unit 1
+	glUniform1i(bumpSampler[NORMAL_UNIT], NORMAL_UNIT);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[NORMAL_MAP]);
+
+	glPushMatrix();
+	glTranslatef(-DESK_OFFSET, -wall_height / 2, DESK_OFFSET);
+	mySphere2(true, tangParam);
+	glPopMatrix();
+	*/
 
 
 	// cup (MUST BE RENDERED LAST)
@@ -1323,14 +1348,14 @@ void create_lists()
 
 
 	// mirror 
-	glNewList(MIRROR, GL_COMPILE);
+	/*glNewList(MIRROR, GL_COMPILE);
 		glPushAttrib(GL_CURRENT_BIT);
 		glUseProgram(defaultShaderProg);
 		glPushMatrix();
 
 		glPopMatrix();
 		glPopAttrib();
-	glEndList();
+	glEndList(); */
 
 
 	// desk list
@@ -1503,6 +1528,18 @@ void create_lists()
 		glTexCoord2f(1, 1);
 			glVertex3f(0, 7.75f, 0);
 		glEnd();
+		glPopMatrix();
+
+		glPopAttrib();
+		glEndList();
+
+		glNewList(LEMON, GL_COMPILE);
+		glPushAttrib(GL_CURRENT_BIT);
+
+		glPushMatrix();
+		glTranslatef(DESK_OFFSET, -wall_height/2, DESK_OFFSET);
+		glScalef(0.50f, 0.50f, 0.50f);
+		mySphere2(true, tangParam);
 		glPopMatrix();
 
 		glPopAttrib();
