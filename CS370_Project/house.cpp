@@ -1,7 +1,7 @@
 // CS370 - Fall 2019
 // Final Project
-//Daniel Palmieri T/TR 12:30-1:45
-//Room currently contains texture mapped windows, table and chairs, door, fireplace, christmas tree with presents,
+// Daniel Palmieri T/TR 12:30-1:45
+// Room currently contains texture mapped windows, table and chairs, door, fireplace, christmas tree with presents,
 // stereo, snow globe, teapot and cup, and a desk with a light on it. 
 // to spin tree use T, 
 // to open/close blinds use O.
@@ -128,11 +128,13 @@ int main(int argc, char *argv[])
 
 	//Associate tangent shader variable
 	numLights_param = glGetUniformLocation(lightShaderProg, "numLights");
-	bumpSampler[SPHERE_UNIT] = glGetUniformLocation(bumpProg, "colorMap");
-	bumpSampler[NORMAL_UNIT] = glGetUniformLocation(bumpProg, "normalMap");
 	texSampler = glGetUniformLocation(textureShaderProg, "texMap");
 	lightTexSampler = glGetUniformLocation(lightTexProg, "texMap2");
 	num_texLights_param = glGetUniformLocation(lightTexProg, "numLights2");
+
+	bumpSampler[FRUIT_UNIT] = glGetUniformLocation(bumpProg, "colorMap");
+	bumpSampler[FRUIT_NORMAL_UNIT] = glGetUniformLocation(bumpProg, "normalMap");
+
 	tangParam = glGetAttribLocation(bumpProg, "tangento");
 
 
@@ -241,35 +243,77 @@ void render_Scene()
 	// spotlight on desk
 	set_SpotLight(GL_LIGHT1, &white_light , light1_pos, light1_dir, light1_cutoff, light1_exp);
 	// spotlight on teapot
-	set_SpotLight(GL_LIGHT2, &lime_light, light1_pos, light2_dir, light2_cutoff, light2_exp);
+	set_SpotLight(GL_LIGHT2, &white_light, light1_pos, light2_dir, light2_cutoff, light2_exp);
 	
 
 	// draw room
+		// 4 walls
 	glPushMatrix();
-	glCallList(ROOM);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEXTURE]);
+	glCallList(FOUR_WALLS);
+	glPopMatrix();
+		// floor
+	glPushMatrix();
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[FLOOR_TEXTURE]);
+	glTranslatef(0, -wall_height, 0);
+	glRotatef(90, 0, 1, 0);
+	glScalef(floor_scaleX, floor_scaleY, floor_scaleZ);
+	glCallList(FLOOR);
+	glPopMatrix();
+		//ceiling
+	glPushMatrix();
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glPushMatrix();
+	glBindTexture(GL_TEXTURE_2D, tex_ids[CEILING_TEXTURE]);
+	glTranslatef(0, wall_height, 0);
+	glRotatef(90, 0, 1, 0);
+	glScalef(floor_scaleX, floor_scaleY, floor_scaleZ);
+	glCallList(CEILING);
 	glPopMatrix();
 	
 	// table and chairs
 	glPushMatrix();
-	setColor(RED);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[STOOL_LEG_TEXTURE]);
 	glTranslatef(TABLE_OFFSET, -wall_height+1, 7);
 	glCallList(TABLE_CHAIRS);
-	glCallList(TABLE_TOP);
 	glPopMatrix();  
 
-	// mirror
+	// work of art
 	glPushMatrix();
+	glUniform1i(texSampler, 0);
+	glUseProgram(textureShaderProg);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[ARTWORK]);
 	glCallList(ART);
 	glPopMatrix();
 
 	// Christmas tree
 			// base
 		glPushMatrix();
-		glCallList(TREE);
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_STUMP_TEXTURE]);
+		glCallList(TREE_BASE);
+		glPopMatrix();
+			// cover
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_COVER_TEXTURE]);
+		glCallList(TREE_COVER);
 		glPopMatrix();
 
 			// top
 		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_TOP_TEXTURE]);
 		glTranslatef(tree_offset, (-wall_height / 2) - 1, tree_offset * 0.9);
 		glRotatef(-90, 1, 0, 0);
 		glRotatef(tree_theta, 0, 0, 1);
@@ -278,19 +322,48 @@ void render_Scene()
 
 			//star on top
 		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		glColor3f(1.0f, 1.0f, 1.0f);
 		glTranslatef(tree_offset, 5.5, tree_offset * 0.9);
 		glRotatef(tree_theta, 0, 1, 0);
 		glCallList(STAR);
 		glPopMatrix();
+			// presents
+				// present 1
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[PRESENT_ONE]);
+		glCallList(TREE_PRESENT_ONE);
+		glPopMatrix();
+				// present 2
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[PRESENT_TWO]);
+		glCallList(TREE_PRESENT_TWO);
+		glPopMatrix();
+				// present 3
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[PRESENT_THREE]);
+		glCallList(TREE_PRESENT_THREE);
+		glPopMatrix();
 
 	// door
 	glPushMatrix();
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[DOOR_TEXTURE]);
 	glCallList(DOOR);
 	glPopMatrix();
 
 	// fan
 		// fan base
 		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		setColor(CHOCOLATE_BROWN);
 		glTranslatef(0, wall_height / 2 + 3.0f, 0);
 		glRotatef(180, 1, 0, 0);
 		glCallList(SNOWGLOBE_BASE);
@@ -298,34 +371,60 @@ void render_Scene()
 
 		// centerpiece of fan
 		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[FAN_LIGHT_TEX]);
 		glCallList(FAN);
 		glPopMatrix();
 
 
 		// fan blades
 		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[FAN_BLADE_TEX]);
 		glRotatef(fan_theta, 0, 1, 0);
 		glCallList(FAN_BLADES);
 		glPopMatrix();
 
 	
 	// fireplace
+		// fire
 	glPushMatrix();
-	glCallList(FIREPLACE);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[FIRE]);
+	glCallList(FIREPLACE_FIRE);
 	glPopMatrix();
+		// mantle
+	glPushMatrix();
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[MANTLE]);
+	glCallList(FIREPLACE_MANTLE);
+	glPopMatrix();
+
 
 	// window 
 		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_PANE_TEX]);
 		glCallList(WINDOW);
 		glPopMatrix();
 
 		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		setColor(WHITE_SAND);
 		glCallList(FULL_WINDOW_PANE);
 		glPopMatrix();
 
 			// window blinds
 		glPushMatrix();
-		glTranslatef(0, (-wall_height / 4.0f)+(blinds_shift+(1.0f-scale_y_theta)), (wall_length * 2) - 0.50f);
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_BLINDS_TEXTURE]);
+		glTranslatef(0, (-wall_height / 4.0f) + (blinds_shift + (1.0f-scale_y_theta)), (wall_length * 2) - 0.50f);
 		glRotatef(180, 0, 1, 0);
 		glScalef(2.25f, 2.25f *scale_y_theta, 1.1f);
 		glCallList(WINDOW_BLINDS);
@@ -335,26 +434,19 @@ void render_Scene()
 	glPushMatrix();
 	glUseProgram(lightShaderProg);
 	glUniform1i(numLights_param, numLights);
-	set_material(GL_FRONT_AND_BACK, &ruby);
+	set_material(GL_FRONT_AND_BACK, &brass);
 	glCallList(DESK);
 	glPopMatrix();
 
 	// desk lamp
-		// rod
 	glPushMatrix();
-	glTranslatef(DESK_OFFSET-1, wall_height / 4.0f, DESK_OFFSET-0.5f);
-	glRotatef(-90, 1, 0, 0);
-	gluCylinder(tree_top, 0.1, 0.1, wall_height, 50, 50);
-	glPopMatrix();
-		// cone bottom
-	glPushMatrix();
-	glTranslatef(DESK_OFFSET - 1, wall_height / 5.0f, DESK_OFFSET - 0.5f);
-	glRotatef(-90, 1, 0, 0);
-	gluCylinder(tree_top, 0.5, 0.1, 1, 50, 50);
+	glCallList(DESK_LAMP);
 	glPopMatrix();
 
 	// legs
 	glPushMatrix();
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
 	glTranslatef(DESK_OFFSET-2.5 , -wall_height + 1.5, DESK_OFFSET-3.5);
 	glScalef(1, 1.75f, 1);
 	glCallList(CHAIR_LEG);
@@ -368,7 +460,10 @@ void render_Scene()
 
 	// desk chair
 	glPushMatrix();
-	glTranslatef(DESK_OFFSET + 3, -wall_height+1, DESK_OFFSET - 0.5);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[STOOL_LEG_TEXTURE]);
+	glTranslatef(DESK_OFFSET + 3, -wall_height + 1, DESK_OFFSET - 0.5);
 	glCallList(FULL_CHAIR);
 	glPopMatrix();
 	
@@ -382,50 +477,66 @@ void render_Scene()
 	glCallList(TEAPOT_LIST);
 	glPopMatrix();
 
-	//snow globe base
-	glPushMatrix();
-	glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 2.0f, -TABLE_OFFSET);
-	glCallList(SNOWGLOBE_BASE);
-	glPopMatrix();
+	// snow globe
+		// scene
+		glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler, 0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[SNOWGLOBE_TEX]);
+		glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 0.5f, -TABLE_OFFSET);
+		glRotatef(snowglobe_theta, 0, 1, 0);
+		glCallList(SNOWGLOBE_SCENE);
+		glPopMatrix();
+
+		// snow globe base
+		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		setColor(CHOCOLATE_BROWN);
+		glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 2.0f, -TABLE_OFFSET);
+		glCallList(SNOWGLOBE_BASE);
+		glPopMatrix();
+
+		// snow globe snow
+		glPushMatrix();
+		glUseProgram(defaultShaderProg);
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 0.5f, -TABLE_OFFSET);
+		glCallList(SNOWGLOBE_SNOW);
+		glPopMatrix();
+
 
 	// speaker
 	glPushMatrix();
+	glUseProgram(defaultShaderProg);
+	setColor(GRAY);
 	glCallList(STEREO);
 	glPopMatrix();
-
-
-
-	// bump mapped spheres (fruit)
+		// texture mapped front
 	glPushMatrix();
-	glCallList(LEMON);
+	glUseProgram(textureShaderProg);
+	glUniform1i(texSampler, 0);
+	glBindTexture(GL_TEXTURE_2D, tex_ids[STEREO_TEX]);
+	glCallList(STEREO_FRONT);
 	glPopMatrix();
-	/*glUseProgram(bumpProg);
 
-	// Associate ORANGE with texture unit 0
-	glUniform1i(bumpSampler[SPHERE_UNIT], SPHERE_UNIT);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[LEMON_TEX]);
-
-	// Associate NORMAL with texture unit 1
-	glUniform1i(bumpSampler[NORMAL_UNIT], NORMAL_UNIT);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[NORMAL_MAP]);
-
+	// fruit bowl
 	glPushMatrix();
-	glTranslatef(-DESK_OFFSET, -wall_height / 2, DESK_OFFSET);
-	mySphere2(true, tangParam);
+	glUseProgram(defaultShaderProg);
+	setColor(TIE_COLOR);
+	glCallList(FRUIT_BOWL);
 	glPopMatrix();
-	*/
-
 
 	// cup (MUST BE RENDERED LAST)
 	glPushMatrix();
+	glUseProgram(defaultShaderProg);
 	glTranslatef(CUP_X, CUP_Y, CUP_Z);
 	glCallList(CUP);
 	glPopMatrix();
 
-	// snow globe (MUST BE RENDERED LAST)
+	// snow globe glass (MUST BE RENDERED LAST)
 	glPushMatrix();
+	glUseProgram(defaultShaderProg);
+	glColor4f(0.658f, 0.8f, 0.843f, 0.3f);//glass color
 	glTranslatef(TABLE_OFFSET, (-wall_height / 2.0f) - 0.5f, -TABLE_OFFSET);
 	glRotatef(snowglobe_theta, 0, 1, 0);
 	glCallList(SNOWGLOBE);
@@ -433,6 +544,78 @@ void render_Scene()
 
 
 
+	// bump mapped spheres (fruit)
+		// lemon
+	if (use_bump_lemon) {
+		
+		glUseProgram(bumpProg);
+
+		// Associate LEMON with texture unit 0
+		glUniform1i(bumpSampler[LEMON_UNIT], LEMON_BUMP);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[LEMON_TEX]);
+
+		// Associate NORMAL with texture unit 1
+		glUniform1i(bumpSampler[LEMON_NORMAL_UNIT], LEMON_NORMAL_BUMP);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[LEMON_NORMAL_MAP]);
+		
+	}
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET, -wall_height / 2, DESK_OFFSET + 0.25f);
+	glScalef(0.35f, 0.35f, 0.35f);
+	glRotatef(45, 1, 0, 0);
+	mySphere2(use_bump_lemon, tangParam);
+	glPopMatrix();
+
+			// apple
+	if (use_bump_apple) {
+
+		glUseProgram(bumpProg);
+
+		// Associate APPLE with texture unit 0
+		glUniform1i(bumpSampler[APPLE_UNIT], APPLE_BUMP);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[APPLE_TEX]);
+
+		// Associate NORMAL with texture unit 1
+		glUniform1i(bumpSampler[APPLE_NORMAL_UNIT], APPLE_NORMAL_BUMP);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[APPLE_NORMAL_MAP]);
+
+	}
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET - 0.5f, -wall_height / 2, DESK_OFFSET + 1.0f);
+	glScalef(0.35f, 0.35f, 0.35f);
+	glRotatef(45, 1, 0, 0);
+	mySphere2(use_bump_apple, tangParam);
+	glPopMatrix();
+
+		// orange
+	if (use_bump_orange) {
+
+		glUseProgram(bumpProg);
+
+		// Associate APPLE with texture unit 0
+		glUniform1i(bumpSampler[ORANGE_UNIT], ORANGE_BUMP);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[ORANGE_TEX]);
+
+		// Associate NORMAL with texture unit 1
+		glUniform1i(bumpSampler[ORANGE_NORMAL_UNIT], ORANGE_NORMAL_BUMP);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[ORANGE_NORMAL_MAP]);
+
+	}
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET, -wall_height / 2, DESK_OFFSET + 1.25f);
+	glScalef(0.35f, 0.35f, 0.35f);
+	glRotatef(45, 1, 0, 0);
+	mySphere2(use_bump_orange, tangParam);
+	glPopMatrix();
+
+
+	glActiveTexture(GL_TEXTURE0);
 	
 }
 
@@ -928,20 +1111,10 @@ void rquad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[])
 
 void create_lists()
 {
-	// cube list
-	glNewList(CUBE, GL_COMPILE);
-	glPushAttrib(GL_CURRENT_BIT);
-	texturecube();
-	glPopAttrib();
-	glEndList();
-
 	// floor list
 	glNewList(FLOOR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
 	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, tex_ids[FLOOR_TEXTURE]);
 	glScalef(1, wall_height, wall_length);
 	texturecube();
 	glPopMatrix();
@@ -951,10 +1124,6 @@ void create_lists()
 	// ceiling list
 	glNewList(CEILING, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, tex_ids[CEILING_TEXTURE]);
 	glRotatef(180, 1, 0, 0);
 	glScalef(1, wall_height, wall_length);
 	texturecube();
@@ -965,21 +1134,18 @@ void create_lists()
 	// wall list
 	glNewList(WALL, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-										/*glUseProgram(bumpProg);
+	/*glUseProgram(bumpProg);
 
-										// Associate WALL with texture unit 0
-										glUniform1i(bumpSampler[WALL_UNIT], WALL_BUMP);
-										glActiveTexture(GL_TEXTURE0);
- -> Started to bump map					glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEXTURE]);
-	 but wasn't sucessful
-										// Associate NORMAL with texture unit 1
-										glUniform1i(bumpSampler[NORMAL_UNIT], NORMAL_BUMP);
-										glActiveTexture(GL_TEXTURE1);
-										glBindTexture(GL_TEXTURE_2D, tex_ids[NORMAL_MAP]);
-										*/
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEXTURE]);
+	// Associate WALL with texture unit 0
+	glUniform1i(bumpSampler[WALL_UNIT], WALL_BUMP);
+	glActiveTexture(GL_TEXTURE0);
+-> Started to bump map					glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEXTURE]);
+	but wasn't sucessful
+									   // Associate NORMAL with texture unit 1
+									   glUniform1i(bumpSampler[NORMAL_UNIT], NORMAL_BUMP);
+									   glActiveTexture(GL_TEXTURE1);
+									   glBindTexture(GL_TEXTURE_2D, tex_ids[NORMAL_MAP]);
+									   */
 
 	glPushMatrix();
 	glScalef(1, wall_height, wall_length);
@@ -988,10 +1154,8 @@ void create_lists()
 	glPopAttrib();
 	glEndList();
 
-	// room list
-	glNewList(ROOM, GL_COMPILE);
+	glNewList(FOUR_WALLS, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	
 	// 4 walls
 	glPushMatrix();
 	setColor(BLUE);
@@ -1022,25 +1186,8 @@ void create_lists()
 	glScalef(1, 1, 2);
 	glCallList(WALL);
 	glPopMatrix();
-
-	// floor
-	glPushMatrix();
-	setColor(GRAY);
-	glTranslatef(0, -wall_height, 0);
-	glRotatef(90, 0, 1, 0);
-	glScalef(floor_scaleX, floor_scaleY, floor_scaleZ);
-	glCallList(FLOOR);
-	glPopMatrix();
-
-	// ceiling
-	glPushMatrix();
-	glTranslatef(0, wall_height, 0);
-	glRotatef(90, 0, 1, 0);
-	glScalef(floor_scaleX, floor_scaleY, floor_scaleZ);
-	glCallList(CEILING);
-	glPopMatrix();
 	glPopAttrib();
-	glEndList();// end room list
+	glEndList();
 
 	// table and chairs
 	glNewList(TABLE_CHAIRS, GL_COMPILE);
@@ -1068,11 +1215,7 @@ void create_lists()
 	// work of art
 	glNewList(ART, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUniform1i(texSampler, 0);
-	glUseProgram(textureShaderProg);
 	glPushMatrix();
-
-	glBindTexture(GL_TEXTURE_2D, tex_ids[ARTWORK]);
 	glTranslatef((wall_length * 2) - 1.0, 0, -5.0f);
 	glScalef(0.1f, 4, 4);
 	texturecube();
@@ -1084,11 +1227,8 @@ void create_lists()
 	glNewList(FAN, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[FAN_LIGHT_TEX]);
-	glTranslatef(0, wall_height-1.5f, 0);
-	gluSphere(fan_center,fan_radius, fan_slices, fan_stacks);
+	glTranslatef(0, wall_height - 1.5f, 0);
+	gluSphere(fan_center, fan_radius, fan_slices, fan_stacks);
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
@@ -1097,13 +1237,10 @@ void create_lists()
 	glNewList(FAN_BLADES, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[FAN_BLADE_TEX]);
-	glTranslatef(2, wall_height-1.0f, 0);
+	glTranslatef(2, wall_height - 1.0f, 0);
 	glRotatef(180, 1, 0, 0);
 	glScalef(2.0f, 0.1f, 0.5f);
-	texturecube();	
+	texturecube();
 
 	glTranslatef(-2, 0, 0);
 	texturecube();
@@ -1113,37 +1250,37 @@ void create_lists()
 	texturecube();
 
 	glTranslatef(0, 0, 2);
-	texturecube();	
+	texturecube();
 
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
-	
+
 
 	// fireplace list
-	glNewList(FIREPLACE, GL_COMPILE);
+	glNewList(FIREPLACE_FIRE, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
 
 	//actual fire
 	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, tex_ids[FIRE]);
 	glTranslatef((-wall_length * 2) + 0.05, (-wall_height / 2) - 1.25, 0);
 	glScalef(1, 2, 2.2);
 	texturecube();
 	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
+	glNewList(FIREPLACE_MANTLE, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
 	//mantel
 	glPushMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[MANTLE]);
 
 	setColor(RED);
 	glTranslatef((-wall_length * 2) + 0.01, (-wall_height / 2) - 0.5, 0);
 	glScalef(1, 3.5, 4);
-	glCallList(CUBE);
+	texturecube();
 	glDisable(GL_BLEND);
 	glPopMatrix();
 	glPopAttrib();
@@ -1152,10 +1289,7 @@ void create_lists()
 	// door list
 	glNewList(DOOR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
 	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, tex_ids[DOOR_TEXTURE]);
 	glTranslatef(0, (-wall_height / 2) + 2.25, (-wall_length * 2) + 0.5);
 	glScalef(5, 6, 0.7);
 	texturecube();
@@ -1166,24 +1300,19 @@ void create_lists()
 	// window list
 	glNewList(WINDOW, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-		//window pane texture
 	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_PANE_TEX]);
 	glTranslatef(0, -wall_height / 4.0f, (wall_length * 2));
 	glRotatef(180, 0, 1, 0);
 	glScalef(2.0f, 2.0f, 1.1f);
-	glCallList(CUBE);
+	texturecube();
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
-		
+
 	// pane instance object
 	glNewList(WINDOW_PANE, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glUseProgram(defaultShaderProg);
-	setColor(WHITE_SAND);
 	glScalef(2.0f, 0.15f, 1.1f);
 	glutSolidCube(2.0);
 	glPopMatrix();
@@ -1193,10 +1322,6 @@ void create_lists()
 	// window blinds
 	glNewList(WINDOW_BLINDS, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_BLINDS_TEXTURE]);
 	texturecube();
 	glPopMatrix();
 	glPopAttrib();
@@ -1205,13 +1330,10 @@ void create_lists()
 	// chair leg
 	glNewList(CHAIR_LEG, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
 	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, tex_ids[STOOL_LEG_TEXTURE]);
 	setColor(BROWN);
 	glScalef(CHAIR_LEG_SCALEX, CHAIR_LEG_SCALEY, CHAIR_LEG_SCALEZ);
-	glCallList(CUBE);
+	texturecube();
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
@@ -1219,14 +1341,10 @@ void create_lists()
 	// chair seat
 	glNewList(CHAIR_SEAT, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
 	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, tex_ids[STOOL_TEXTURE]);
-	setColor(BROWN);
 	glTranslatef(0, 0.25, 0);
 	glScalef(CHAIR_SEAT_SCALE, CHAIR_SEAT_SCALE_Y, CHAIR_SEAT_SCALE);
-	glCallList(CUBE);
+	texturecube();
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
@@ -1235,7 +1353,6 @@ void create_lists()
 	glNewList(FULL_CHAIR, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	setColor(BROWN);
 	glCallList(CHAIR_LEG);
 	glTranslatef(-CHAIR_WIDTH, 0, 0);
 	glCallList(CHAIR_LEG);
@@ -1244,106 +1361,97 @@ void create_lists()
 	glTranslatef(CHAIR_WIDTH, 0, 0);
 	glCallList(CHAIR_LEG);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	setColor(BROWN);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[STOOL_TEXTURE]);
 	glTranslatef(-CHAIR_WIDTH / 2, CHAIR_LEG_TO_SEAT_HEIGHT, CHAIR_WIDTH / 2);
 	glCallList(CHAIR_SEAT);
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
 
-	// tree list (excludes top)
-	glNewList(TREE, GL_COMPILE);
+	// tree base
+	glNewList(TREE_BASE, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-
-	//base
 	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_STUMP_TEXTURE]);
 	glTranslatef(tree_offset, -wall_height, tree_offset * 0.9);
 	glRotatef(-90, 1, 0, 0);
 	glScalef(0.60, 0.60, 1);
 	gluCylinder(tree_stump, stump_radius, stump_radius, stump_height, stump_slices, stump_stacks);
 	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
 
-	// cover
+	// tree cover
+	glNewList(TREE_COVER, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_COVER_TEXTURE]);
 	glTranslatef(tree_offset, -wall_height + 0.15f, tree_offset * 0.9);
 	glRotatef(-90, 1, 0, 0);
 	glScalef(0.75, 0.75, 0.75);
 	gluDisk(tree_cover, tree_cover_inner_rad, tree_cover_outer_rad, tree_slices, tree_stacks);
 	glDisable(GL_BLEND);
 	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
 
 	// presents
 		// present 1
+	glNewList(TREE_PRESENT_ONE, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[PRESENT_ONE]);
 	glTranslatef(tree_offset - 1, -wall_height + 0.15f, tree_offset * 0.6);
 	glRotatef(45, 0, 1, 0);
 	texturecube();
 	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
 	// present 2
+	glNewList(TREE_PRESENT_TWO, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[PRESENT_TWO]);
 	glTranslatef(tree_offset - 2, -wall_height + 0.15f, tree_offset);
 	glRotatef(45, 0, 1, 0);
-
 	texturecube();
 	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
 	// present 3
+	glNewList(TREE_PRESENT_THREE, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
-	glUseProgram(textureShaderProg);
-	glUniform1i(texSampler, 0);
-	glBindTexture(GL_TEXTURE_2D, tex_ids[PRESENT_THREE]);
 	glTranslatef(tree_offset - 4, -wall_height + 0.15f, tree_offset * 0.7);
 	texturecube();
 	glPopMatrix();
-
 	glPopAttrib();
-	glEndList(); //end tree list (excludes top)
+	glEndList();
 
 
 	// tree top list
 	glNewList(TREE_TOP, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
-		// top
-		glPushMatrix();
-		glUseProgram(textureShaderProg);
-		glUniform1i(texSampler, 0);
-		glBindTexture(GL_TEXTURE_2D, tex_ids[TREE_TOP_TEXTURE]);
-		glScalef(0.75, 0.75, 0.75);
-		gluCylinder(tree_top, tree_base, 0.1, tree_height, tree_slices, tree_stacks);
-		glPopMatrix();
-		glPopAttrib();
-		glEndList();
+	glPushAttrib(GL_CURRENT_BIT);
+	// top
+	glPushMatrix();
+	glScalef(0.75, 0.75, 0.75);
+	gluCylinder(tree_top, tree_base, 0.1, tree_height, tree_slices, tree_stacks);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
 
-		//star list
-		glNewList(STAR, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
-		glPushMatrix();
-		glUseProgram(defaultShaderProg);
-		glColor3f(1.0f, 1.0f, 1.0f);
-		glScalef(0.5, 0.5, 0.5);
-		glutSolidIcosahedron();
-		glPopMatrix();
-		glPopAttrib();
+	//star list
+	glNewList(STAR, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glScalef(0.5, 0.5, 0.5);
+	glutSolidIcosahedron();
+	glPopMatrix();
+	glPopAttrib();
 	glEndList();
 
 
@@ -1360,188 +1468,213 @@ void create_lists()
 
 	// desk list
 	glNewList(DESK, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
-		glPushMatrix();
-		glTranslatef(DESK_OFFSET-1, -wall_height/1.75f, DESK_OFFSET);
-		glScalef(2.0f, 0.2f, 4.0f);
-		colorcube();
-		glPopMatrix();
-		glPopAttrib();
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET - 1, -wall_height / 1.75f, DESK_OFFSET);
+	glScalef(2.0f, 0.2f, 4.0f);
+	colorcube();
+	glPopMatrix();
+	glPopAttrib();
 	glEndList();
 
 	// full window pane
 	glNewList(FULL_WINDOW_PANE, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
-		glPushMatrix();
-		glTranslatef(0, 0.25f, (wall_length * 2) - 0.25f);
-		glScalef(1.2, 1, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-		// bottom
-		glPushMatrix();
-		glTranslatef(0, -4.0f, (wall_length * 2) - 0.25f);
-		glScalef(1.2, 1, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-		// right side
-		glPushMatrix();
-		glTranslatef(-2.15f, -2.0f, (wall_length * 2) - 0.25f);
-		glRotatef(90, 0, 0, 1);
-		glScalef(1.05f, 1.05f, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-		// left side 
-		glPushMatrix();
-		glTranslatef(2.15f, -2.0f, (wall_length * 2) - 0.25f);
-		glRotatef(90, 0, 0, 1);
-		glScalef(1.05f, 1.05f, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-		// middle column
-		glPushMatrix();
-		glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
-		glRotatef(90, 0, 0, 1);
-		glScalef(1.05f, 1.05f, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-		// middle row
-		glPushMatrix();
-		glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
-		glScalef(1.05f, 1.05f, 1);
-		glCallList(WINDOW_PANE);
-		glPopMatrix();
-		glPopAttrib();
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glTranslatef(0, 0.25f, (wall_length * 2) - 0.25f);
+	glScalef(1.2, 1, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+	// bottom
+	glPushMatrix();
+	glTranslatef(0, -4.0f, (wall_length * 2) - 0.25f);
+	glScalef(1.2, 1, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+	// right side
+	glPushMatrix();
+	glTranslatef(-2.15f, -2.0f, (wall_length * 2) - 0.25f);
+	glRotatef(90, 0, 0, 1);
+	glScalef(1.05f, 1.05f, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+	// left side 
+	glPushMatrix();
+	glTranslatef(2.15f, -2.0f, (wall_length * 2) - 0.25f);
+	glRotatef(90, 0, 0, 1);
+	glScalef(1.05f, 1.05f, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+	// middle column
+	glPushMatrix();
+	glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
+	glRotatef(90, 0, 0, 1);
+	glScalef(1.05f, 1.05f, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+	// middle row
+	glPushMatrix();
+	glTranslatef(0, -2.0f, (wall_length * 2) - 0.25f);
+	glScalef(1.05f, 1.05f, 1);
+	glCallList(WINDOW_PANE);
+	glPopMatrix();
+	glPopAttrib();
 	glEndList();
 
 	// translucent sphere (snow globe)
 	glNewList(SNOWGLOBE, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
-			//inside piece
-		glPushMatrix();
-		glUseProgram(textureShaderProg);
-		glUniform1i(texSampler, 0);
-		glBindTexture(GL_TEXTURE_2D, tex_ids[SNOWGLOBE_TEX]);
-		glColor3f(0.0f, 0.0f, 0.0f);
-		glRotatef(-90.0f, 0, 1, 0);
-		glRotatef(-90, 1, 0, 0);
-		glScalef(0.8, 0.8, 0.8);
-		gluSphere(tree_top, 1.0f, 100, 100);
-		glPopMatrix();
+	glPushAttrib(GL_CURRENT_BIT);
+	//translucent cover
+	glPushMatrix();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glutSolidSphere(1.0f, 100, 100);
+	glDisable(GL_BLEND);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
-			//white disk for snow
+
+	// snowglobe scene
+	glNewList(SNOWGLOBE_SCENE, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glRotatef(-90.0f, 0, 1, 0);
+	glRotatef(-90, 1, 0, 0);
+	glScalef(0.8, 0.8, 0.8);
+	gluSphere(tree_top, 1.0f, 100, 100);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+
+	// snowglobe snow
+	glNewList(SNOWGLOBE_SNOW, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
 		glPushMatrix();
-		glUseProgram(defaultShaderProg);
 		glColor3f(1.0f, 1.0f, 1.0f);
 		glTranslatef(0, -0.7f, 0);
 		glRotatef(-90, 1, 0, 0);
 		gluDisk(tree_stump, 0.01f, globe_top_rad, globe_base_stacks, globe_base_slices);
 		glPopMatrix();
-		
-			//translucent cover
-		glPushMatrix();
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glUseProgram(defaultShaderProg);
-		glColor4f(0.658f, 0.8f, 0.843f, 0.3f);//glass color
-		glutSolidSphere(1.0f, 100, 100);
-		glDisable(GL_BLEND);
-		glPopMatrix();
-		glPopAttrib();
+	glPopAttrib();
 	glEndList();
 
 	// snowglobe base
 	glNewList(SNOWGLOBE_BASE, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
+	glPushAttrib(GL_CURRENT_BIT);
 		glPushMatrix();
-		glUseProgram(defaultShaderProg);
-		setColor(CHOCOLATE_BROWN);
 		glRotatef(-90.0f, 1, 0, 0);
 		gluCylinder(tree_stump, globe_bot_rad, globe_top_rad, globe_height, globe_base_stacks, globe_base_slices);
 		glPopMatrix();
 		glPopAttrib();
 		glEndList();
-
-	// teapot 
+		// teapot 
 		glNewList(TEAPOT_LIST, GL_COMPILE);
 		glPushAttrib(GL_CURRENT_BIT);
-		glUseProgram(lightShaderProg);
 		glPushMatrix();
 		glutSolidTeapot(0.5f);
 		glPopMatrix();
-		glPopAttrib();
-		glEndList();
+	glPopAttrib();
+	glEndList();
 
-		// cup with tea
-		glNewList(CUP, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
-
+	// cup with tea
+	glNewList(CUP, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
 
 		// "tea" in cup
-		glPushMatrix();
-		glUseProgram(defaultShaderProg);
-		glColor4f(0.95f, 0.01f, 0.01f, 0.3f); // red
-		glRotatef(-90, 1, 0, 0);
-		gluCylinder(tree_top, TEA_RAD, TEA_RAD, TEA_HEIGHT, 100, 100);
-		glPopMatrix();
+	glPushMatrix();
+	glColor4f(0.95f, 0.01f, 0.01f, 0.3f); // red
+	glRotatef(-90, 1, 0, 0);
+	gluCylinder(tree_top, TEA_RAD, TEA_RAD, TEA_HEIGHT, 100, 100);
+	glPopMatrix();
 
 		// translucent cup
-		glPushMatrix();
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glUseProgram(defaultShaderProg);
-		glColor4f(0.658f, 0.8f, 0.843f, 0.3f);//glass color
-		glRotatef(-90, 1, 0, 0);
-		gluCylinder(tree_stump, CUP_RAD, CUP_RAD, CUP_HEIGHT, 100, 100);
-		glDisable(GL_BLEND);
-		glPopMatrix();
-		glPopAttrib();
-		glEndList();
+	glPushMatrix();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(0.658f, 0.8f, 0.843f, 0.3f);//glass color
+	glRotatef(-90, 1, 0, 0);
+	gluCylinder(tree_stump, CUP_RAD, CUP_RAD, CUP_HEIGHT, 100, 100);
+	glDisable(GL_BLEND);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
-		//stereo list
-		glNewList(STEREO, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
-			// stereo base cube
-		glPushMatrix();
-		glUseProgram(defaultShaderProg);
-		setColor(GRAY);
-		glTranslatef(17, -wall_height / 2.0f, (-wall_length * 2) + 2);
-		glRotatef(-90, 1, 0, 0);
-		glRotatef(45, 0, 0, 1);
-		glScalef(2, 2, 4);
-		colorcube();
-		glPopMatrix();
-		
-			//front texture mapped piece
-		glPushMatrix();
-		glUseProgram(textureShaderProg);
-		glUniform1i(texSampler, 0);
-		glBindTexture(GL_TEXTURE_2D, tex_ids[STEREO_TEX]);
-		glTranslatef(14.1, -wall_height, (-wall_length * 2) + 2.05f);
-		glRotatef(-45, 0, 1, 0);
-		glBegin(GL_POLYGON);
-		glTexCoord2f(0, 1);
-			glVertex3f(0, 0, 0);
-		glTexCoord2f(0, 0);
-			glVertex3f(4.0f, 0, 0);
-		glTexCoord2f(1, 0);
-			glVertex3f(4.0f, 7.75f, 0);
-		glTexCoord2f(1, 1);
-			glVertex3f(0, 7.75f, 0);
-		glEnd();
-		glPopMatrix();
+	//stereo lists
+	glNewList(STEREO, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+		// stereo base cube
+	glPushMatrix();
+	glTranslatef(17, -wall_height / 2.0f, (-wall_length * 2) + 2);
+	glRotatef(-90, 1, 0, 0);
+	glRotatef(45, 0, 0, 1);
+	glScalef(2, 2, 4);
+	colorcube();
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
-		glPopAttrib();
-		glEndList();
+		//front texture mapped piece
+	glNewList(STEREO_FRONT, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glTranslatef(14.1, -wall_height, (-wall_length * 2) + 2.05f);
+	glRotatef(-45, 0, 1, 0);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0, 1);
+	glVertex3f(0, 0, 0);
+	glTexCoord2f(0, 0);
+	glVertex3f(4.0f, 0, 0);
+	glTexCoord2f(1, 0);
+	glVertex3f(4.0f, 7.75f, 0);
+	glTexCoord2f(1, 1);
+	glVertex3f(0, 7.75f, 0);
+	glEnd();
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
-		glNewList(LEMON, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
+	// desk lamp
+	glNewList(DESK_LAMP, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	// rod
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET - 1, wall_height / 4.0f, DESK_OFFSET - 0.5f);
+	glRotatef(-90, 1, 0, 0);
+	gluCylinder(tree_top, 0.1, 0.1, wall_height, 50, 50);
+	glPopMatrix();
+	// cone bottom
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET - 1, wall_height / 5.0f, DESK_OFFSET - 0.5f);
+	glRotatef(-90, 1, 0, 0);
+	gluCylinder(tree_top, 0.5, 0.1, 1, 50, 50);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
 
-		glPushMatrix();
-		glTranslatef(DESK_OFFSET, -wall_height/2, DESK_OFFSET);
-		glScalef(0.50f, 0.50f, 0.50f);
-		mySphere2(true, tangParam);
-		glPopMatrix();
+	// fruit bowl
+	glNewList(FRUIT_BOWL, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET - 0.75f , -wall_height / 2.0f, DESK_OFFSET + 0.5f);
+	glRotatef(90, 1, 0, 0);
+	glScalef(0.5f, 0.5f, 0.5f);
+	gluCylinder(tree_top, 4.5f, 0.1f, 1.5f, 100, 100);
+	glPopMatrix();
+	glPopAttrib();
+	glEndList();
+	// bump mapped fruit
+	/*glNewList(LEMON, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
 
-		glPopAttrib();
-		glEndList();
+	glPushMatrix();
+	glTranslatef(DESK_OFFSET, -wall_height / 2, DESK_OFFSET);
+	glScalef(0.50f, 0.50f, 0.50f);
+	mySphere2(true, tangParam);
+	glPopMatrix();
+
+	glPopAttrib();
+	glEndList();*/
+
 }

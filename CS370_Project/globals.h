@@ -10,26 +10,40 @@ int projectionType = FIRSTPERSON;
 #define Z 2
 #define RAD2DEG (180.0f/3.14159f)
 #define DEG2RAD (3.14159f/180.0f)
-#define SPHERE_UNIT 0
-#define NORMAL_UNIT 1
-#define SPHERE_BUMP 0
-#define NORMAL_BUMP 1
+#define LEMON_UNIT 0
+#define LEMON_NORMAL_UNIT 1
+#define LEMON_BUMP 0
+#define LEMON_NORMAL_BUMP 1
+
+#define APPLE_UNIT 0
+#define APPLE_NORMAL_UNIT 1
+#define APPLE_BUMP 0
+#define APPLE_NORMAL_BUMP 1
+
+#define ORANGE_UNIT 0
+#define ORANGE_NORMAL_UNIT 1
+#define ORANGE_BUMP 0
+#define ORANGE_NORMAL_BUMP 1
+
+#define FRUIT_UNIT 0
+#define FRUIT_NORMAL_UNIT 1
+
 
 // lists
 #define CUBE 1
 #define WALL 2
-#define ROOM 3
+#define FOUR_WALLS 3
 #define TABLE_CHAIRS 4
 #define ART 5
 #define FAN 6
-#define FIREPLACE 7
+#define FIREPLACE_MANTLE 7
 #define DOOR 8
 #define WINDOW 9
 #define CHAIR_LEG 10
 #define CHAIR_SEAT 11
 #define FULL_CHAIR 12
 #define FLOOR 13
-#define TREE 14
+#define TREE_BASE 14
 #define TABLE_TOP 15
 #define CEILING 16
 #define TREE_TOP 17
@@ -45,6 +59,16 @@ int projectionType = FIRSTPERSON;
 #define STEREO 27
 #define FAN_BLADES 28
 #define LEMON 29
+#define FIREPLACE_FIRE 30
+#define TREE_COVER 31
+#define TREE_PRESENT_ONE 32
+#define TREE_PRESENT_TWO 33
+#define TREE_PRESENT_THREE 34
+#define DESK_LAMP 35
+#define SNOWGLOBE_SNOW 36
+#define SNOWGLOBE_SCENE 37
+#define STEREO_FRONT 38
+#define FRUIT_BOWL 39
 
 
 // Color identifiers
@@ -188,6 +212,12 @@ GLfloat teapot_theta = 0.0f;
 GLint div_level = 8;
 
 
+// bump mapped spheres
+bool use_bump_lemon = true;
+bool use_bump_apple = true;
+bool use_bump_orange = true;
+
+
 // textures
 // texture constants
 #define ENVIRONMENT 0
@@ -212,10 +242,14 @@ GLint div_level = 8;
 #define STEREO_TEX 19
 #define FAN_LIGHT_TEX 20
 #define FAN_BLADE_TEX 21
-#define NORMAL_MAP 22
+#define LEMON_NORMAL_MAP 22
 #define LEMON_TEX 23
+#define APPLE_NORMAL_MAP 24
+#define APPLE_TEX 25
+#define ORANGE_NORMAL_MAP 26
+#define ORANGE_TEX 27
 
-#define NUM_TEXTURES 24
+#define NUM_TEXTURES 28
 
 
 	// texture array
@@ -229,7 +263,9 @@ GLint div_level = 8;
 											{"pres_tex_1.jpg"} , {"pres_tex_2.jpg"} , {"pres_tex_3.jpg"},
 											{"wall_texture.png"}, {"window_tex.jpg"} , {"window_blinds.jpg"}, 
 											{"snowglobe_tex.jpg"}, {"stereo_tex.jpg"} , {"fan_light.png"} , 
-											{"fan_blade.jpeg"}, {"NormalMap.png"}, {"lemon_peel_tex.jpg"} };
+											{"fan_blade.jpeg"}, {"NormalMap.png"}, {"lemon_peel_tex.jpg"},
+											{"apple_normal.png"}, {"apple_texture.jpg"} , {"orange_normal.png"}, 
+																							{"orange_tex.jpg"} };
 
 	// texture coordinates
 
@@ -243,9 +279,9 @@ GLfloat cube_tex[][2] = { {0,1}, {0, 0}, {1, 0}, {1,1},
 
 
 //light1 (white spotlight) Parameters 
-GLfloat light1_pos[] = { DESK_OFFSET , wall_height / 5.0f, DESK_OFFSET - 0.5f };
+GLfloat light1_pos[] = { DESK_OFFSET - 0.5f , wall_height / 5.0f, DESK_OFFSET + 0.5f };
 GLfloat light1_dir[] = { 0,-1,0};
-GLfloat light1_cutoff = 15;
+GLfloat light1_cutoff = 30;
 GLfloat light1_exp = 1;
 
 // light2 (lime spotlight) parameters
