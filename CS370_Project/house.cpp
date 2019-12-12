@@ -1011,14 +1011,14 @@ void render_Mirror()
 		// Draw mirror surface
 		glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
 		glBegin(GL_POLYGON);
-			glTexCoord2f(0, 0);//1, 0);
+			glTexCoord2f(0, 0);
 			glVertex3f((-wall_length * 2 + 1.25), -4, 15);
-			glTexCoord2f(0, 1);//1, 1);
+			glTexCoord2f(0, 1);
 			glVertex3f((-wall_length * 2 + 1.25), 3, 15);
-			glTexCoord2f(1, 1);//0, 1);
+			glTexCoord2f(1, 1);
 			glVertex3f((-wall_length * 2 + 1.25), 3, 8);
-			glTexCoord2f(1, 0);//0, 0);
-			glVertex3f((-wall_length*2  + 1.25), -4, 8);  // should be -wall_length*2 + 1.25 ,but is currently 5.25 to test to make sure image is not on other side
+			glTexCoord2f(1, 0);
+			glVertex3f((-wall_length*2  + 1.25), -4, 8);
 		glEnd();
 	glPopMatrix();
 	
@@ -1134,19 +1134,6 @@ void create_lists()
 	// wall list
 	glNewList(WALL, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	/*glUseProgram(bumpProg);
-
-	// Associate WALL with texture unit 0
-	glUniform1i(bumpSampler[WALL_UNIT], WALL_BUMP);
-	glActiveTexture(GL_TEXTURE0);
--> Started to bump map					glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEXTURE]);
-	but wasn't sucessful
-									   // Associate NORMAL with texture unit 1
-									   glUniform1i(bumpSampler[NORMAL_UNIT], NORMAL_BUMP);
-									   glActiveTexture(GL_TEXTURE1);
-									   glBindTexture(GL_TEXTURE_2D, tex_ids[NORMAL_MAP]);
-									   */
-
 	glPushMatrix();
 	glScalef(1, wall_height, wall_length);
 	texturecube();
@@ -1154,9 +1141,10 @@ void create_lists()
 	glPopAttrib();
 	glEndList();
 
+	// 4 walls
 	glNewList(FOUR_WALLS, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-	// 4 walls
+
 	glPushMatrix();
 	setColor(BLUE);
 	glTranslatef(-wall_length * 2, 0, 0);
@@ -1454,18 +1442,6 @@ void create_lists()
 	glPopAttrib();
 	glEndList();
 
-
-	// mirror 
-	/*glNewList(MIRROR, GL_COMPILE);
-		glPushAttrib(GL_CURRENT_BIT);
-		glUseProgram(defaultShaderProg);
-		glPushMatrix();
-
-		glPopMatrix();
-		glPopAttrib();
-	glEndList(); */
-
-
 	// desk list
 	glNewList(DESK, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
@@ -1664,17 +1640,5 @@ void create_lists()
 	glPopMatrix();
 	glPopAttrib();
 	glEndList();
-	// bump mapped fruit
-	/*glNewList(LEMON, GL_COMPILE);
-	glPushAttrib(GL_CURRENT_BIT);
-
-	glPushMatrix();
-	glTranslatef(DESK_OFFSET, -wall_height / 2, DESK_OFFSET);
-	glScalef(0.50f, 0.50f, 0.50f);
-	mySphere2(true, tangParam);
-	glPopMatrix();
-
-	glPopAttrib();
-	glEndList();*/
 
 }

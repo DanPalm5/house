@@ -285,7 +285,7 @@ GLfloat light1_cutoff = 30;
 GLfloat light1_exp = 1;
 
 // light2 (lime spotlight) parameters
-GLfloat light2_pos[]{ POT_X, POT_Y + 5.0f, POT_Z };
+GLfloat light2_pos[]{ POT_X, 5.0f, POT_Z };
 GLfloat light2_dir[] = { 0, -1, 0 };
 GLfloat light2_cutoff = 30;
 GLfloat light2_exp = 1;
